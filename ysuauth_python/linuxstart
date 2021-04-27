@@ -1,0 +1,14 @@
+#!/bin/bash
+case "$1" in
+    start):
+        echo "Starting app"
+        nohup python3 /home/pi/ysuauth/ysuauth_python/authauth.py &
+    ;;
+    stop):
+        echo "to"
+        #kill $( ps aux | grep -m 1 'python3 /home/pi/ysuauth/ysuauth_python/authauth.py' | awk '{ print $2 }') ;; *)
+        echo "Usage: service start_tool start|stop"
+        exit 1 ;;
+esac
+
+exit 0

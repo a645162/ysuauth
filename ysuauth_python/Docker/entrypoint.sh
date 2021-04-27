@@ -15,7 +15,7 @@ git branch -u $REPO_BRANCH
 echo "pull code from gitee"
 git -C /ysuauth pull --rebase
 
-
+git clone -b develop https://gitee.com/a645162/ysuauth.git /ysuauth
 
 echo "--------start--------"
 cd /ysuauth
