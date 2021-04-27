@@ -24,3 +24,22 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+bin
+.idea/
+*.iml
+*.classes
+*.jar
+*.war
+*.ear
+target
+.settings
+.classpath
+.project
+.metadata/
+classes/
+logs/
+*.log
+
+*.pwd
