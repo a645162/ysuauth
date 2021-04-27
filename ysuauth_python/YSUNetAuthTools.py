@@ -36,7 +36,7 @@ class YSUNetAuth():
         try:
             res = req.get('http://auth.ysu.edu.cn', headers=self.header)
             # res = req.get('http://123.123.123.123', headers=self.header)
-            print(res.geturl())
+            # print(res.geturl())
             if res.geturl().find('success.jsp') > 0:
                 self.isLogin = True
             else:
@@ -68,24 +68,27 @@ class YSUNetAuth():
                 'validcode': code,
                 'passwordEncrypt': 'False'
             }
-            res = req.get('http://auth.ysu.edu.cn', headers=self.header)
-            r = res.read().decode('utf-8')
-            queryString = re.findall(r"href='.*?\?(.*?)'", r, re.S)
-            self.data['queryString'] = queryString[0]
+            try:
+                res = req.get('http://auth.ysu.edu.cn', headers=self.header)
+                r = res.read().decode('utf-8')
+                queryString = re.findall(r"href='.*?\?(.*?)'", r, re.S)
+                self.data['queryString'] = queryString[0]
 
-            res = req.post(self.url + 'login', headers=self.header, data=self.data)
+                res = req.post(self.url + 'login', headers=self.header, data=self.data)
 
-            login_json = json.loads(res.read().decode('utf-8'))
-            self.userindex = login_json['userIndex']
-            # self.info = login_json
-            self.info = login_json['message']
-            if login_json['result'] == 'success':
-                return (True, '认证成功')
-            else:
-                return (False, self.info)
-        return (True, '已经在线')
+                login_json = json.loads(res.read().decode('utf-8'))
+                self.userindex = login_json['userIndex']
+                # self.info = login_json
+                self.info = login_json['message']
+                if login_json['result'] == 'success':
+                    return True, '认证成功'
+                else:
+                    return False, self.info
+            except:
+                return False, "Network Error!"
+        return True, '已经在线'
 
-    def get_alldata(self):
+    def get_allData(self):
         """
         获取当前认证账号全部信息
         #！！！注意！！！#此操作会获得账号alldata['userId']姓名alldata['userName']以及密码alldata['password']

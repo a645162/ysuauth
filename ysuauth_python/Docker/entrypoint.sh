@@ -7,6 +7,7 @@ set -e
 #fi
 
 echo "set remote git url..."
+git clone https://gitee.com/a645162/ysuauth.git /ysuauth
 cd /ysuauth
 git remote set-url origin $REPO_URL
 git reset --hard

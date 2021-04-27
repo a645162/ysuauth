@@ -43,3 +43,5 @@ logs/
 *.log
 
 *.pwd
+
+__pycache__/
