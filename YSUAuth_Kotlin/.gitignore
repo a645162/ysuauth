@@ -1,3 +1,5 @@
+# Created by .ignore support plugin (hsz.mobi)
+### macOS template
 # General
 .DS_Store
 .AppleDouble
@@ -25,22 +27,4 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-
-bin
-.idea/
-*.iml
-*.classes
-*.war
-*.ear
-target
-.settings
-.classpath
-.project
-.metadata/
-classes/
-logs/
-*.log
-
-*.pwd
-
-__pycache__/
+out/
