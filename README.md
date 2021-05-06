@@ -24,3 +24,9 @@ Android App是否开源目前本人还在考虑当中
 QQ：846155976
 <br>
 E-Mail：a645162@qq.com
+
+## 钉钉
+[钉钉加群](https://h5.dingtalk.com/circle/healthCheckin.html?corpId=ding99dabd69bc14820726501c2c33ba7dcb)
+也可以哦！
+
+<img src="img/WechatIMG725.jpg" style="zoom:50%" />
