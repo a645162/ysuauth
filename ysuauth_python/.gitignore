@@ -27,6 +27,7 @@ Temporary Items
 
 
 bin
+*.iml
 *.classes
 *.war
 *.ear
