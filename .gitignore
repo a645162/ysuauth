@@ -42,3 +42,4 @@ logs/
 *.pwd
 
 __pycache__/
+ysuauth_python/__pycache__/

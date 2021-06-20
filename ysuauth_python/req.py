@@ -8,7 +8,7 @@ def post(url, headers={}, data={}):
     print(urllib.parse.urlencode(data))
     data = bytes(urllib.parse.urlencode(data), encoding='utf-8')
     request = urllib.request.Request(url, headers=headers, data=data)
-    response = urllib.request.urlopen(request)
+    response = urllib.request.urlopen(request, timeout=20)
     return response
 
 

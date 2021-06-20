@@ -20,15 +20,25 @@ def loginUser(users):
                 print("[", datetime.datetime.now(), "]", "连接", re)
                 break
             else:
-                print("[", datetime.datetime.now(), "]", parse.netTypeToString(support) + "失败")
+                print("[", datetime.datetime.now(), "]",
+                      parse.netTypeToString(support) + "失败(", re[1], ")")
 
 
 while True:
 
-    if not ysuAuth.tst_net():
-        print("[", datetime.datetime.now(), "]", "Not Connect!!!!!")
-        loginUser(users)
+    import datetime
+
+    now = datetime.datetime.now()
+    hour = now.hour
+
+    if hour >= 6 and (hour < 23 or (hour == 23 and now.minute <= 25)):
+        if not ysuAuth.tst_net():
+            print("[", datetime.datetime.now(), "]", "Not Connect!!!!!")
+            loginUser(users)
+        else:
+            print("[", datetime.datetime.now(), "]", "connected!")
     else:
-        print("[", datetime.datetime.now(), "]", "connected!")
+        print("[", datetime.datetime.now(), "]", "不在工作时间！")
+
     print("-----------------------------------------------------")
     time.sleep(10)
