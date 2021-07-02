@@ -1,5 +1,9 @@
 import os
 
+import platform
+
+from ysuauth_python.logs import log
+
 
 def netTypeToString(type):
     if type == "0":
@@ -15,7 +19,24 @@ def netTypeToString(type):
 def getUsersFromFile(filename):
     users = []
 
-    with open(filename, 'r') as f:
+    # 系统类型
+    isWindows = False
+    if str(platform.system()).index("Windows") != -1:
+        isWindows = True
+
+    encode1 = "utf-8"
+    if isWindows:
+        encode1 = "gbk"
+
+    f = open(filename, 'r', encoding=encode1)
+    try:
+        f.read()
+    except UnicodeDecodeError:
+        encode1 = "utf-8"
+    finally:
+        f.close()
+
+    with open(filename, 'r', encoding=encode1) as f:
         uList = f.readlines()
         for userOriginString in uList:
             userStringList = userOriginString.split("#")
@@ -26,13 +47,25 @@ def getUsersFromFile(filename):
             num = uSplitList[0].strip()
             support = uSplitList[1].strip()
             if os.path.exists(num + ".pwd"):
+                encode2 = "utf-8"
+                if isWindows:
+                    encode2 = "gbk"
+
+                f = open(num + '.pwd', 'r', encoding=encode2)
                 try:
-                    with open(num + '.pwd', 'r') as f:
+                    p = f.read().strip()
+                except UnicodeDecodeError:
+                    encode2 = "utf-8"
+                finally:
+                    f.close()
+
+                try:
+                    with open(num + '.pwd', 'r', encoding=encode2) as f:
                         p = f.read().strip()
-                        if len(p) != 0:
-                            pwd = p
                 except:
                     log.log("读取文件错误")
+                if len(p) != 0:
+                    pwd = p
             if len(pwd) == 0:
                 continue
             users.append({

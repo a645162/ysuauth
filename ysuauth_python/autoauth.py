@@ -7,6 +7,7 @@ import datetime
 
 ysuAuth = YSUNetAuth()
 users = parse.getUsersFromFile("users.ini")
+print(users)
 
 
 def loginUser(users):
@@ -39,6 +40,7 @@ while True:
             print("[", datetime.datetime.now(), "]", "connected!")
     else:
         print("[", datetime.datetime.now(), "]", "不在工作时间！")
+        time.sleep(60)
 
     print("-----------------------------------------------------")
     time.sleep(10)
