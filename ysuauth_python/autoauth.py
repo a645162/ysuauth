@@ -1,4 +1,4 @@
-import time
+import apptime
 from YSUNetAuthTools import YSUNetAuth
 from logs import log
 import parse
@@ -43,4 +43,21 @@ while True:
         time.sleep(60)
 
     print("-----------------------------------------------------")
-    time.sleep(10)
+    apptime.sleep(10)
+
+
+def execfile(filepath, globals=None, locals=None):
+    if globals is None:
+        globals = {}
+    globals.update({
+        "__file__": filepath,
+        "__name__": "__main__",
+    })
+    with open(filepath, 'rb') as file:
+        exec(compile(file.read(), filepath, 'exec'), globals, locals)
+
+
+if __name__ == '__main__':
+    # pass
+    # runfile()
+    execfile("./main.py")

@@ -63,7 +63,9 @@ def getUsersFromFile(filename):
                     with open(num + '.pwd', 'r', encoding=encode2) as f:
                         p = f.read().strip()
                 except:
-                    log.log("读取文件错误")
+                    # TODO:LOG
+                    pass
+                    # log.log("读取文件错误")
                 if len(p) != 0:
                     pwd = p
             if len(pwd) == 0:

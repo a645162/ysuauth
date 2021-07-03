@@ -41,5 +41,7 @@ logs/
 *.log
 
 *.pwd
+*.dingtalk
+*webhook*
 
 __pycache__/

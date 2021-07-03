@@ -14,8 +14,8 @@ fun main() {
 //    println(ysuNetLogin.logout())
 //    println(ysuNetLogin.getAuthStatus())
 
+    //TODO:还是有问题！
     println(ysuNetLogin.isCampusNetwork())
-
 
 
 //    val userInfo = ysuNetLogin.getUserData()
