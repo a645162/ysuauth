@@ -43,3 +43,6 @@ logs/
 
 __pycache__/
 ysuauth_python/__pycache__/
+ysuauth_python/dingtalk_webhook.json
+ysuauth_python/wh_access_token.dingtalk
+ysuauth_python/wh_secret.dingtalk
