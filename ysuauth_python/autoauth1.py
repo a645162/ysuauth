@@ -1,6 +1,6 @@
 import apptime
 from YSUNetAuthTools import YSUNetAuth
-from program_logs import log
+# from program_logs import log
 import parse
 
 import datetime
@@ -9,6 +9,12 @@ import threading
 
 from dingtalk import DingTalk
 import datetime
+
+import program_logs
+
+import parseDingTalkJson
+
+program_logs.print1('程序开始运行')
 
 dt = DingTalk()
 
@@ -25,9 +31,9 @@ class myThread(threading.Thread):
 
     def run(self):
         nowtime = datetime.datetime.now()
-        print("\t\t\t开始线程({})："
-              .format(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
-              + self.name)
+        program_logs.print1("\t\t\t启动钉钉发信线程({})："
+                            .format(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
+                            + self.name)
         if not type:
             program = {
                 "msgtype": "link",
@@ -53,29 +59,35 @@ class myThread(threading.Thread):
                     "isAtAll": True
                 }
             }
-        print("\t\t\t延时{}秒后发送{}连接成功的消息！".format(str(delayTime), self.time))
+        program_logs.print1("\t\t\t延时{}秒后发送{}连接成功的消息！".format(str(delayTime), self.time))
         time.sleep(delayTime)
-        print("\t\t\t延时完毕开始发送{}连接成功的消息！".format(self.time))
+        program_logs.print1("\t\t\t延时完毕开始发送{}连接成功的消息！".format(self.time))
         ok = False
         while not ok:
             try:
                 f = dt.sendMsg(program)
+                program_logs.print1("DingTalk Response:" + f.text)
             except:
-                print("发送出错，等待1s后再次发送。")
-                time.sleep(1)
+                program_logs.print1("发送出错，等待10s后再次发送。", True)
+                time.sleep(10)
                 pass
             else:
-                ok = True
+                if f != None and len(f.text) != 0:
+                    jsonStr = str(f.text)
+                    ok = parseDingTalkJson.isDingTalkOk(jsonStr)
+                else:
+                    program_logs.print1("取不到返回吗？！", True)
+                    ok = True
 
         nowtime = datetime.datetime.now()
-        print("\t\t\t退出线程({})："
-              .format(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
-              + self.name)
+        program_logs.print1("\t\t\t退出钉钉发信线程({})："
+                            .format(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
+                            + self.name)
 
 
 ysuAuth = YSUNetAuth()
 users = parse.getUsersFromFile("users.ini")
-print(users)
+program_logs.print1(users)
 
 
 def loginUser(users):
@@ -86,11 +98,11 @@ def loginUser(users):
         for support in supports:
             re = ysuAuth.login(user["num"], user["password"], support)
             if re[0]:
-                print("[", datetime.datetime.now(), "]", "连接", re)
+                program_logs.print1("连接" + re)
                 break
             else:
-                print("[", datetime.datetime.now(), "]",
-                      parse.netTypeToString(support) + "失败(", re[1], ")")
+                program_logs.print1(parse.netTypeToString(support) + "失败(" + re[1] + ")"
+                                    , True)
 
 
 last = -1
@@ -102,25 +114,25 @@ while True:
 
     if apptime.isInTime((6, 1), (23, 25)):
         if not ysuAuth.tst_net():
-            print("[", now, "]", "Not Connect!!!!!")
+            program_logs.print1("Not Connect!!!!!")
             if last == 2:
                 disConnectedTime = False
             last = 1
             loginUser(users)
         else:
-            print("[", now, "]", "connected!")
+            program_logs.print1("connected!")
             if last != 2:
                 myThread(datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S'), False).start()
             last = 2
             if len(disConnectedTime) != 0:
                 myThread(disConnectedTime, True).start()
     else:
-        print("[", now, "]", "不在工作时间！")
+        program_logs.print1("不在工作时间！")
         last = 0
         time.sleep(60)
 
-    print("-----------------------------------------------------")
-    print()
+    # program_logs.print1("-----------------------------------------------------")
+    # print()
     time.sleep(10)
 
 # def execfile(filepath, globals=None, locals=None):
