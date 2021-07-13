@@ -2,7 +2,7 @@ import os
 
 import platform
 
-from program_logs import log
+# from program_logs import log
 
 
 def netTypeToString(type):

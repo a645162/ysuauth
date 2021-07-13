@@ -1,3 +1,4 @@
+import logging
 import time
 import hmac
 import hashlib
@@ -8,7 +9,11 @@ import datetime
 
 import requests
 import json
+
+
 # https://developers.dingtalk.com/document/app/custom-robot-access
+from ysuauth_python import program_logs
+
 
 class DingTalk:
 
@@ -51,7 +56,10 @@ class DingTalk:
                 self.secret = p
 
         self.url = self.getUrl(self.access_token,
-                          self.secret)
+                               self.secret)
+        program_logs.print1(self.access_token)
+        program_logs.print1(self.secret)
+        program_logs.print1(self.url)
         # print(self.access_token, self.secret)
         # print(self.url)
 
@@ -71,4 +79,5 @@ class DingTalk:
     def sendMsg(self, msg):
         headers = {'Content-Type': 'application/json'}
         f = requests.post(self.url, data=json.dumps(msg), headers=headers)
+        logging.info(f.content)
         return f
