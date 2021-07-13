@@ -1,5 +1,5 @@
 from YSUNetAuthTools import YSUNetAuth
-from logs import log
+from program_logs import log
 import sys
 import parse
 

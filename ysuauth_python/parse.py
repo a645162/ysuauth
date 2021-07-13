@@ -2,7 +2,7 @@ import os
 
 import platform
 
-from ysuauth_python.logs import log
+from program_logs import log
 
 
 def netTypeToString(type):
