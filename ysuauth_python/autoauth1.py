@@ -1,9 +1,7 @@
 import apptime
 from YSUNetAuthTools import YSUNetAuth
-# from program_logs import log
 import parse
 
-import datetime
 import time
 import threading
 
@@ -13,6 +11,7 @@ import datetime
 import program_logs
 
 import parseDingTalkJson
+import config
 
 program_logs.print1('程序开始运行')
 
@@ -34,7 +33,8 @@ class myThread(threading.Thread):
         program_logs.print1("\t\t\t启动钉钉发信线程({})："
                             .format(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
                             + self.name)
-        if not type:
+        typeStr = "连接成功"
+        if not self.type:
             program = {
                 "msgtype": "link",
                 "link": {"text": "[{}] 联网成功！".format(self.time),
@@ -47,6 +47,7 @@ class myThread(threading.Thread):
                 }
             }
         else:
+            typeStr = "错误"
             program = {
                 "msgtype": "markdown",
                 "markdown": {
@@ -59,12 +60,19 @@ class myThread(threading.Thread):
                     "isAtAll": True
                 }
             }
-        program_logs.print1("\t\t\t延时{}秒后发送{}连接成功的消息！".format(str(delayTime), self.time))
+        program_logs.print1(
+            "\t\t\t延时{}秒后发送{}{}的消息！"
+                .format(str(delayTime), self.time, typeStr)
+        )
         time.sleep(delayTime)
-        program_logs.print1("\t\t\t延时完毕开始发送{}连接成功的消息！".format(self.time))
+        program_logs.print1(
+            "\t\t\t延时完毕开始发送{}{}的消息！"
+                .format(self.time, typeStr)
+        )
         ok = False
         while not ok:
             try:
+                dt.getUrl()
                 f = dt.sendMsg(program)
                 program_logs.print1("DingTalk Response:" + f.text)
             except:
@@ -98,7 +106,7 @@ def loginUser(users):
         for support in supports:
             re = ysuAuth.login(user["num"], user["password"], support)
             if re[0]:
-                program_logs.print1("连接" + re)
+                program_logs.print1("连接" + str(re))
                 break
             else:
                 program_logs.print1(parse.netTypeToString(support) + "失败(" + re[1] + ")"
@@ -107,6 +115,7 @@ def loginUser(users):
 
 last = -1
 disConnectedTime = ""
+threadPool = []
 while True:
 
     now = datetime.datetime.now()
@@ -122,31 +131,25 @@ while True:
         else:
             program_logs.print1("connected!")
             if last != 2:
-                myThread(datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S'), False).start()
+                threadPool.append(
+                    myThread(datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S'), False)
+                )
+                threadPool[len(threadPool) - 1].start()
             last = 2
             if len(disConnectedTime) != 0:
-                myThread(disConnectedTime, True).start()
+                threadPool.append(
+                    myThread(disConnectedTime, True)
+                )
+                threadPool[len(threadPool)].start()
     else:
         program_logs.print1("不在工作时间！")
         last = 0
         time.sleep(60)
 
-    # program_logs.print1("-----------------------------------------------------")
-    # print()
+    if config.isFileExist("restart.ysuauth"):
+        program_logs.print1("检测到重启程序指令。")
+        program_logs.print1("跳出检测循环。")
+        program_logs.print1("-----------------------------------------------------")
+        break
+
     time.sleep(10)
-
-# def execfile(filepath, globals=None, locals=None):
-#     if globals is None:
-#         globals = {}
-#     globals.update({
-#         "__file__": filepath,
-#         "__name__": "__main__",
-#     })
-#     with open(filepath, 'rb') as file:
-#         exec(compile(file.read(), filepath, 'exec'), globals, locals)
-
-
-# if __name__ == '__main__':
-#     # pass
-#     # runfile()
-#     execfile("./main.py")

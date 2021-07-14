@@ -10,9 +10,8 @@ import datetime
 import requests
 import json
 
-
 # https://developers.dingtalk.com/document/app/custom-robot-access
-from ysuauth_python import program_logs
+import program_logs
 
 
 class DingTalk:
@@ -33,16 +32,21 @@ class DingTalk:
     def getAccessToken(self, url):
         return url[url.find("access_token=") + len("access_token="):]
 
-    def getUrl(self, access_token, secret):
-        if access_token.find("https://") != -1:
-            access_token = self.getAccessToken(access_token)
-        token = self.getToken(secret)
-        return "https://oapi.dingtalk.com/robot/send?access_token={}&timestamp={}&sign={}" \
-            .format(access_token, token[0], token[1])
-
     access_token = ""
     secret = ""
     url = ""
+
+    def getUrl(self, access_token="", secret=""):
+        if len(access_token) == 0:
+            access_token = self.access_token
+        if len(secret) == 0:
+            secret = self.secret
+        if access_token.find("https://") != -1:
+            access_token = self.getAccessToken(access_token)
+        token = self.getToken(secret)
+        self.url = "https://oapi.dingtalk.com/robot/send?access_token={}&timestamp={}&sign={}" \
+            .format(access_token, token[0], token[1])
+        return self.url
 
     def getFromFiles(self, path=""):
         with open(path + 'wh_access_token.dingtalk', 'r') as f:
