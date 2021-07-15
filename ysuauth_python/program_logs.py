@@ -13,6 +13,7 @@ logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
                     )
 
 
+
 #
 # class log():
 #     def log(self, log):

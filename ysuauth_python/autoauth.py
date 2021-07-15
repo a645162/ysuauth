@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import time
 import program_logs
 import config
+import os
 
 
 def execfile(filepath, globals=None, locals=None):
@@ -17,11 +20,12 @@ def execfile(filepath, globals=None, locals=None):
 if __name__ == '__main__':
     # pass
     # runfile()
+    restartFilename = "restart.ysuauth"
     while True:
-        execfile("./autoauth1.py")
-        if config.isFileExist("restart.ysuauth"):
-            program_logs.print1("\t\t\t\t\t10秒后重新启动程序")
+        execfile("main_auto_auth.py")
+        if config.isFileExist(restartFilename):
+            program_logs.print1("\t\t\t\t\tAfter 10 seconds will restart!")
             time.sleep(10)
-            program_logs.print1("\t\t\t\t\t重新启动程序！！！！")
+            program_logs.print1("\t\t\t\t\trestart！！！！")
         else:
             break

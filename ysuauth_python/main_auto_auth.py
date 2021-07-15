@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import apptime
 from YSUNetAuthTools import YSUNetAuth
 import parse
@@ -12,6 +14,13 @@ import program_logs
 
 import parseDingTalkJson
 import config
+
+import os
+
+restartFilename = "restart.ysuauth"
+if config.isFileExist(restartFilename):
+    program_logs.print1('\t\t\t\t\t程序重启。')
+    os.remove(restartFilename)
 
 program_logs.print1('程序开始运行')
 
