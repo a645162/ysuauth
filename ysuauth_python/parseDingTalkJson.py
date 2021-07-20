@@ -22,4 +22,23 @@ def isDingTalkOk(jsonStr):
     program_logs.print1("isDingTalkOk :" + str(r))
     return r
 
+
+def testDingTalkError1(jsonStr, errorStr):
+    program_logs.print1("Parse JSON :" + jsonStr)
+    if len(jsonStr) == 0:
+        return False
+    jsonArray = dict(json.loads(jsonStr))
+    program_logs.print1("JSON Array :" + str(jsonArray))
+    print(jsonArray)
+    if list(jsonArray.keys()).index("errmsg") != -1:
+        return str(jsonArray['errmsg']).find(errorStr) != -1
+    else:
+        return False
+
+
+def testDingTalkError(jsonStr, errorStr):
+    r = testDingTalkError1(jsonStr, errorStr)
+    program_logs.print1("isDingTalkOk :" + str(r))
+    return r
+
 # print(isDingTalkOk(jsonStr))

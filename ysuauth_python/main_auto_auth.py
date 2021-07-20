@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 
 import apptime
 from YSUNetAuthTools import YSUNetAuth
@@ -31,7 +32,7 @@ dt.getFromFiles()
 delayTime = 10
 
 
-class myThread(threading.Thread):
+class dingTalkThread(threading.Thread):
     def __init__(self, time, type=False):
         threading.Thread.__init__(self)
         self.time = time
@@ -85,13 +86,19 @@ class myThread(threading.Thread):
                 f = dt.sendMsg(program)
                 program_logs.print1("DingTalk Response:" + f.text)
             except:
-                program_logs.print1("发送出错，等待10s后再次发送。", True)
-                time.sleep(10)
+                program_logs.print1("发送出错，等待20s后再次发送。", True)
+                time.sleep(20)
                 pass
             else:
                 if f != None and len(f.text) != 0:
                     jsonStr = str(f.text)
                     ok = parseDingTalkJson.isDingTalkOk(jsonStr)
+                    if not ok:
+                        if ok.testDingTalkError(jsonStr, "too fast"):
+                            time.sleep(60 + random.randint(10, 30))
+                        elif ok.testDingTalkError(jsonStr, "invalid timestamp"):
+                            dt.getUrl()
+
                 else:
                     program_logs.print1("取不到返回吗？！", True)
                     ok = True
@@ -138,16 +145,16 @@ while True:
             last = 1
             loginUser(users)
         else:
-            program_logs.print1("connected!")
             if last != 2:
+                program_logs.print1("Turn to connected!")
                 threadPool.append(
-                    myThread(datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S'), False)
+                    dingTalkThread(datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S'), False)
                 )
                 threadPool[len(threadPool) - 1].start()
             last = 2
             if len(disConnectedTime) != 0:
                 threadPool.append(
-                    myThread(disConnectedTime, True)
+                    dingTalkThread(disConnectedTime, True)
                 )
                 threadPool[len(threadPool)].start()
     else:

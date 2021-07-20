@@ -36,7 +36,6 @@ target
 .project
 .metadata/
 classes/
-logs/
 *.log
 
 *.pwd
