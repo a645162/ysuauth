@@ -16,8 +16,11 @@ import program_logs
 
 class DingTalk:
 
-    def getToken(self, secret):
+    def getToken(self, secret, timestamp=0):
+        if timestamp == 0:
+            timestamp = time.time()
         timestamp = str(round(time.time() * 1000))
+        program_logs.print1(str(timestamp))
         # secret = 'this is secret'
         secret_enc = secret.encode('utf-8')
         string_to_sign = '{}\n{}'.format(timestamp, secret)
@@ -36,14 +39,14 @@ class DingTalk:
     secret = ""
     url = ""
 
-    def getUrl(self, access_token="", secret=""):
+    def getUrl(self, access_token="", secret="", timestamp=0):
         if len(access_token) == 0:
             access_token = self.access_token
         if len(secret) == 0:
             secret = self.secret
         if access_token.find("https://") != -1:
             access_token = self.getAccessToken(access_token)
-        token = self.getToken(secret)
+        token = self.getToken(secret, timestamp)
         self.url = "https://oapi.dingtalk.com/robot/send?access_token={}&timestamp={}&sign={}" \
             .format(access_token, token[0], token[1])
         return self.url

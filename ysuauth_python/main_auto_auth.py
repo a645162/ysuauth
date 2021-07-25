@@ -18,6 +18,8 @@ import config
 
 import os
 
+import ntp
+
 restartFilename = "restart.ysuauth"
 if config.isFileExist(restartFilename):
     program_logs.print1('\t\t\t\t\t程序重启。')
@@ -82,7 +84,9 @@ class dingTalkThread(threading.Thread):
         ok = False
         while not ok:
             try:
-                dt.getUrl()
+                t = ntp.ntp_getTimeStamp()
+                program_logs.print1("NTP TIMESTAMP:{}".format(str(t)))
+                dt.getUrl(timestamp=t)
                 f = dt.sendMsg(program)
                 program_logs.print1("DingTalk Response:" + f.text)
             except:

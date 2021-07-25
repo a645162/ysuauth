@@ -4,6 +4,8 @@ from dingtalk import DingTalk
 import datetime
 
 import time
+import program_logs
+import ntp
 
 dt = DingTalk()
 
@@ -35,6 +37,9 @@ class myThread(threading.Thread):
         ok = False
         while not ok:
             try:
+                t = ntp.ntp_getTimeStamp()
+                program_logs.print1("NTP TIMESTAMP:{}".format(str(t)))
+                dt.getUrl(timestamp=t)
                 f = dt.sendMsg(program)
             except:
                 print("发送出错，等待1s后再次发送。")
@@ -50,6 +55,7 @@ class myThread(threading.Thread):
               + self.name)
 
 
-nowtime = datetime.datetime.now()
-thread1 = myThread(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
-thread1.start()
+if __name__ == '__main__':
+    nowtime = datetime.datetime.now()
+    thread1 = myThread(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
+    thread1.start()
