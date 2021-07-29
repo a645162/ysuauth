@@ -25,6 +25,7 @@ def get_list(hosts_list):
 class ntp_host():
     host_url = ""
     timeout = 0
+    ms = 0
 
     def __init__(self, host_url):
         self.host_url = host_url
@@ -35,6 +36,7 @@ class ntp_host():
             return 0
         timeout = ping_simple.ping_host(self.host_url)
         self.timeout = timeout
+        self.ms = int(timeout * 1000)
         return timeout
 
     def __get__(self, other):

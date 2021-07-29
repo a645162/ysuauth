@@ -13,17 +13,12 @@ logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
                     )
 
 
-
-#
-# class log():
-#     def log(self, log):
-#         print("[", datetime.datetime.now(), "]", log)
-
-def print1(text, error=False):
-    typeStr = "Info"
+def print1(text="", error=False):
+    typeStr = "Info√"
     if error:
         logging.error(text)
-        typeStr = "Error!!!"
+        typeStr = "!!!Error!!!"
     else:
         logging.info(text)
-    print("[", datetime.datetime.now(), "]({})".format(typeStr), text)
+    s = "[" + str(datetime.datetime.now()) + "]({})".format(typeStr) + "  " + text
+    print(s)

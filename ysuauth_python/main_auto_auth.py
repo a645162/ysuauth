@@ -20,6 +20,8 @@ import os
 
 import ntp
 
+import ntp_hosts
+
 restartFilename = "restart.ysuauth"
 if config.isFileExist(restartFilename):
     program_logs.print1('\t\t\t\t\t程序重启。')
@@ -33,12 +35,16 @@ dt.getFromFiles()
 
 delayTime = 10
 
+my_ntp_hosts = ntp_hosts.ntp_hosts()
+my_ntp_hosts.initFile()
+
 
 class dingTalkThread(threading.Thread):
-    def __init__(self, time, type=False):
+    def __init__(self, time, type=False, ntp=None):
         threading.Thread.__init__(self)
         self.time = time
         self.type = type
+        self.ntp = ntp
 
     def run(self):
         nowtime = datetime.datetime.now()
@@ -84,8 +90,11 @@ class dingTalkThread(threading.Thread):
         ok = False
         while not ok:
             try:
-                t = ntp.ntp_getTimeStamp()
-                program_logs.print1("NTP TIMESTAMP:{}".format(str(t)))
+                if self.ntp is not None:
+                    t = ntp.ntp_getTimeStamp()
+                    program_logs.print1("NTP TIMESTAMP:{}".format(str(t)))
+                else:
+                    t = 0
                 dt.getUrl(timestamp=t)
                 f = dt.sendMsg(program)
                 program_logs.print1("DingTalk Response:" + f.text)
@@ -151,10 +160,14 @@ while True:
         else:
             if last != 2:
                 program_logs.print1("Turn to connected!")
-                threadPool.append(
-                    dingTalkThread(datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S'), False)
-                )
-                threadPool[len(threadPool) - 1].start()
+                thread = \
+                    dingTalkThread(
+                        datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S'),
+                        False,
+                        my_ntp_hosts
+                    )
+                thread.start()
+                threadPool.append(thread)
             last = 2
             if len(disConnectedTime) != 0:
                 threadPool.append(
