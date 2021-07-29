@@ -9,6 +9,7 @@ import threading
 
 from program_logs import print1
 
+
 class ntp_hosts():
     hosts_ = []
 
@@ -107,9 +108,11 @@ class ntp_hosts():
                 timeout = "Timeout: out of Time!"
 
             t = ""
-            l = (self.maxLength - len(i.host_url))//2
-            for j in range(l + 1):
+            l = (self.maxLength - len(i.host_url))
+            for j in range(l // 2 + 1):
                 t += "  "
+            for j in range(l % 2):
+                t += " "
 
             program_logs.print1("NTP server:" + i.host_url + " "
                                 + t + timeout + "(l = {})".format(str(l)))
@@ -182,6 +185,7 @@ if __name__ == "__main__":
     n.initFile()
     n.getFromFiles()
     n.getMaxLength()
+
     n.pingAllMultThread(4)
     while not n.isPingAllMultThreadEnd():
         time.sleep(1)
@@ -196,6 +200,5 @@ if __name__ == "__main__":
     print1("Sorted:")
 
     n.output()
-
 
     n.writeToFile()
