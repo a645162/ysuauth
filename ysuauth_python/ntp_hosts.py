@@ -4,10 +4,9 @@ import program_logs
 
 import os
 import ntp_host
+import ntp
 
 import threading
-
-from program_logs import print1
 
 
 class ntp_hosts():
@@ -65,9 +64,19 @@ class ntp_hosts():
 
     def initFile(self, path=""):
         if len(path) == 0:
+            program_logs.print1("未指定NTP Hosts配置文件路径")
             path = "ntp.list"
 
+        program_logs.print1(
+            "开始读取NTP hosts文件 {}"
+                .format(path)
+        )
+
         if os.path.exists(path):
+            program_logs.print1(
+                "找到NTP Hosts配置文件：{}"
+                    .format(path)
+            )
             h = []
             with open(path, "r")as f:
                 s = f.read()
@@ -81,6 +90,11 @@ class ntp_hosts():
             if len(h) != 0:
                 self.hosts = h
         else:
+            program_logs.print1(
+                "未找到NTP Hosts配置文件："
+                "但已经创建 {}"
+                    .format(path)
+            )
             self.writeNewFile(path)
 
     def sort(self, restart_ping=False):
@@ -115,7 +129,7 @@ class ntp_hosts():
                 t += " "
 
             program_logs.print1("NTP server:" + i.host_url + " "
-                                + t + timeout + "(l = {})".format(str(l)))
+                                + t + timeout)
 
     def delItem(self, num=0.0):
         i = 0
@@ -125,6 +139,17 @@ class ntp_hosts():
             if (num == 0 and t == 0) \
                     or (num == -1) \
                     or (num > 0 and (t == 0 or t * 1000 > num)):
+                self.hosts.remove(self.hosts[i])
+                self.hosts_.remove(self.hosts_[i])
+                l -= 1
+            else:
+                i += 1
+
+    def testAll(self):
+        i = 0
+        l = len(self.hosts)
+        while i < l:
+            if not self.hosts[i].testOK():
                 self.hosts.remove(self.hosts[i])
                 self.hosts_.remove(self.hosts_[i])
                 l -= 1
@@ -146,9 +171,31 @@ class ntp_hosts():
                 thisMission.ping()
                 self.workingQueue.remove(thisMission)
 
+    class ntpTestThread(threading.Thread):
+
+        def __init__(self, num, queue, workingQueue, okList):
+            threading.Thread.__init__(self)
+            self.num = num
+            self.queue = queue
+            self.workingQueue = workingQueue
+            self.okList = okList
+
+        def run(self):
+            while len(self.queue) != 0:
+                thisMission = self.queue.pop()
+                self.workingQueue.append(thisMission)
+                if thisMission.testOK():
+                    self.okList.append(thisMission)
+                self.workingQueue.remove(thisMission)
+
     queue = []
-    ntpPingThreadPool = []
+    ntpThreadPool_ping = []
     workingQueue = []
+
+    queue_test = []
+    ntpThreadPool_test = []
+    workingQueue_test = []
+    okList_test = []
 
     def pingAllMultThread(self, num=6):
         if num < 1:
@@ -162,11 +209,31 @@ class ntp_hosts():
                                                 self.queue,
                                                 self.workingQueue)
 
-            self.ntpPingThreadPool.append(ntpPingThreadi)
+            self.ntpThreadPool_ping.append(ntpPingThreadi)
+            ntpPingThreadi.start()
+
+    def testAllMultThread(self, num=6):
+        if num < 1:
+            num = 1
+
+        self.stopTest()
+        self.queue_test = self.hosts.copy()
+
+        for i in range(num):
+            ntpPingThreadi = self.ntpTestThread(i,
+                                                self.queue_test,
+                                                self.workingQueue_test,
+                                                self.okList_test
+                                                )
+
+            self.ntpThreadPool_test.append(ntpPingThreadi)
             ntpPingThreadi.start()
 
     def isPingAllMultThreadEnd(self):
         return len(self.queue) == 0 and len(self.workingQueue) == 0
+
+    def isTestAllMultThreadEnd(self):
+        return len(self.queue_test) == 0 and len(self.workingQueue_test) == 0
 
     def stopPing(self):
         if self.isPingAllMultThreadEnd():
@@ -174,7 +241,19 @@ class ntp_hosts():
         else:
             self.queue = []
             self.workingQueue = []
-            self.ntpPingThreadPool = []
+            self.ntpThreadPool_ping = []
+
+    def updateListByTestResult(self):
+        self.hosts = self.okList_test
+
+    def stopTest(self):
+        if self.isTestAllMultThreadEnd():
+            return True
+        else:
+            self.queue_test = []
+            self.workingQueue_test = []
+            self.okList_test = []
+            self.ntpThreadPool_test = []
 
     def isEmpty(self):
         return len(self.hosts)
@@ -186,18 +265,27 @@ if __name__ == "__main__":
     n.getFromFiles()
     n.getMaxLength()
 
-    n.pingAllMultThread(4)
+    n.pingAllMultThread(6)
     while not n.isPingAllMultThreadEnd():
         time.sleep(1)
-    print("结束")
+    print("结束Ping")
     n.output()
     n.delItem(100)
+    n.testAllMultThread(6)
+    while not n.isTestAllMultThreadEnd():
+        time.sleep(1)
+    n.updateListByTestResult()
+    print("结束Test")
+    # 想了想，没必要只保留10个，毕竟后面的基本上不会被访问到
+    # while len(n.hosts) > 10:
+    #     n.hosts.pop()
+
     n.sort()
 
     print()
     print()
     print()
-    print1("Sorted:")
+    program_logs.print1("Sorted:")
 
     n.output()
 

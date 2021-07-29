@@ -3,14 +3,16 @@
 # 欢迎关注微信公众号：点滴技术
 # 这里有靠谱、有价值、免费分享
 import ntplib
-import os, datetime
+import os
+import datetime
+import time
 import ntp_hosts
 import program_logs
 
-hosts = ntp_hosts.getHosts()
 
-
-def ntp_getTimeStamp():
+def ntp_getTimeStamp(hosts):
+    if len(hosts) == 0:
+        return 0
     # 创建实例，NTPClient()是一个类
     t = ntplib.NTPClient()
     ok = False
@@ -24,7 +26,7 @@ def ntp_getTimeStamp():
                 # 显示的是时间戳
                 t = r.tx_time
                 ok = True
-                program_logs.print1("从{}获取到时间{}".format(host,str(t)))
+                program_logs.print1("从{}获取到时间{}".format(host, str(t)))
                 # print("从{}获取到时间".format(host))
                 break
         except Exception as e:
@@ -33,11 +35,15 @@ def ntp_getTimeStamp():
     if ok:
         return t
     else:
-        return None
+        return 0
 
 
-def ntp_client():
-    t = ntp_getTimeStamp()
+def getDatetime(timestamp):
+    return datetime.datetime.fromtimestamp(timestamp)
+
+
+def ntp_client(hosts):
+    t = ntp_getTimeStamp(hosts)
 
     if t != None:
         # 使用datetime模块,格式化：x年x月x日 时:分:秒.毫秒

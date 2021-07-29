@@ -23,7 +23,7 @@ if __name__ == '__main__':
     log = log()
     print(ysuAuth.tst_net())
     ysuAuth.logout()
-    ysuAuth.get_alldata()
+    ysuAuth.get_allData()
     print(ysuAuth.tst_net())
     # # (False, '您本月可用流量已用尽，下月将自动恢复！')
     # print(loger.login("201811080333", "", "0"))

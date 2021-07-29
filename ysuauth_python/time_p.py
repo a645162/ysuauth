@@ -6,8 +6,8 @@ import time
 class time_p():
     t = None
 
-    def NTP_GetTime(self):
-        t = ntp.ntp_getTimeStamp()
+    def NTP_GetTime(self, hosts):
+        t = ntp.ntp_getTimeStamp(hosts)
         self.t = t
         return t
 
