@@ -2,7 +2,7 @@ FROM python:3.9.6-alpine
 MAINTAINER Haomin Kong
 
 LABEL AUTHOR = "Haomin Kong" \
-      VERSION = 1
+      VERSION = 2
 
 WORKDIR /ysuauth
 
@@ -13,7 +13,6 @@ ENV REPO_URL="https://gitee.com/a645162/ysuauth.git" \
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
     && apk add --no-cache build-base libffi-dev git \
-#    && apk add -U --no-cache tzdata \
     # 我觉得吧，还是比较有必要用清华源的。
     && pip --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
     && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
@@ -25,13 +24,17 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && apk del libffi-dev build-base \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo Haomin Kong >> docker_status \
-    && echo "Asia/Shanghai" > /etc/timezone \
-    && python3 ntp_hosts.py
-#    && chronyd
+    && echo "Asia/Shanghai" > /etc/timezone
 
 #COPY entrypoint.sh entrypoint.sh
 COPY src/ /ysuauth
 RUN rm -rf /ysuauth/gitversion/allfiles
+RUN rm -rf /ysuauth/logs
+RUN mkdir /ysuauth/logs
+RUN chmod -R 777 /ysuauth/logs
+
+
+RUN python3 ntp_hosts.py
 
 #ENTRYPOINT ["entrypoint.sh"]
 CMD python3 autoauth.py

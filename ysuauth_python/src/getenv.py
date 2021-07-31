@@ -16,3 +16,11 @@ def getDingTalk():
         return None
     else:
         return (wh_access_token, wh_secret)
+
+
+def getGit():
+    use_git = os.environ.get("USE_GIT")
+    if use_git is None:
+        return False
+    else:
+        return True

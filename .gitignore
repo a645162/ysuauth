@@ -52,3 +52,5 @@ ysuauth_python/*webhook*
 docker-compose.yml
 docker1.sh
 *.logs
+*restart.ysuauth
+*date.ysuauth

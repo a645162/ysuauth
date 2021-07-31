@@ -9,7 +9,8 @@ import threading
 import ntp_hosts
 
 logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
-                    filename='logs/{}.logs'.format(datetime.datetime.strftime(apptime.getNow(), 'ysuauth_%Y%m%d_%H%M%S')),
+                    filename='logs/{}.log'.format(
+                        datetime.datetime.strftime(apptime.getNow(), 'ysuauth_%Y%m%d_%H%M%S')),
                     filemode='a',  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
                     # a是追加模式，默认如果不写的话，就是追加模式
                     format=
@@ -64,3 +65,14 @@ class asynchronismPrintThread(threading.Thread):
             t = 0
 
         print1("( Asynchronous Print ) " + msg[0], msg[1], t)
+
+
+def execfile(filepath, globals=None, locals=None):
+    if globals is None:
+        globals = {}
+    globals.update({
+        "__file__": filepath,
+        "__name__": "__main__",
+    })
+    with open(filepath, 'rb') as file:
+        exec(compile(file.read(), filepath, 'exec'), globals, locals)
