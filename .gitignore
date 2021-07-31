@@ -49,3 +49,6 @@ ysuauth_python/wh_access_token.dingtalk
 ysuauth_python/wh_secret.dingtalk
 ysuauth_python/*.dingtalk
 ysuauth_python/*webhook*
+docker-compose.yml
+docker1.sh
+*.logs

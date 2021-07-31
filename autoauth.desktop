@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=YSUAutoAUTH
+Exec=lxterminal -e bash -c 'python3 /home/pi/ysuauth/ysuauth_python/autoauth.py;$SHELL'
+Terminal=true
+Path=/home/pi/ysuauth/ysuauth_python/

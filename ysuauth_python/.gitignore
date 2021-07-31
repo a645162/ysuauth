@@ -45,3 +45,8 @@ logs/
 *webhook*
 
 __pycache__/
+
+docker-compose.yml
+docker.sh
+users.ini
+test/

@@ -33,7 +33,12 @@ def get(url, headers=None):
     try:
         request = urllib.request.Request(url, headers=headers)
         response = urllib.request.urlopen(request, timeout=10)
+
     except Exception as e:
         program_logs.print1(repr(e))
         raise e
     return response
+
+
+def cleanup():
+    urllib.request.urlcleanup()

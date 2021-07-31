@@ -1,8 +1,9 @@
 import os
-
+import getenv
 import platform
 
-# from program_logs import log
+
+# from program_logs import logs
 
 
 def netTypeToString(type):
@@ -16,7 +17,42 @@ def netTypeToString(type):
         return "中国电信"
 
 
+def getUsersFromEnv():
+    users = []
+    u = getenv.getUser()
+
+    if u is None or len(u) == 0:
+        return None
+    u = u.strip()
+
+    if len(u) == 0:
+        return None
+
+    uList = u.split("&")
+
+    for userOriginString in uList:
+        userStringList = userOriginString.split("#")
+        uSplitList = userStringList[0].strip().split("=")
+        if len(uSplitList) != 2:
+            continue
+        num = uSplitList[0].strip()
+        support = uSplitList[1].strip()
+        pwd = getenv.getPwd(num)
+        if pwd is None or len(pwd) == 0:
+            continue
+
+        users.append({
+            "num": num,
+            "password": pwd,
+            "support": support
+        })
+
+    return users
+
+
 def getUsersFromFile(filename):
+    if not os.path.exists(filename):
+        return None
     users = []
 
     # 系统类型
@@ -65,7 +101,7 @@ def getUsersFromFile(filename):
                 except:
                     # TODO:LOG
                     pass
-                    # log.log("读取文件错误")
+                    # logs.logs("读取文件错误")
                 if len(p) != 0:
                     pwd = p
             if len(pwd) == 0:

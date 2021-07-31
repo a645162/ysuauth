@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 import hmac
 import hashlib
@@ -9,6 +10,8 @@ import datetime
 
 import requests
 import json
+
+import getenv
 
 # https://developers.dingtalk.com/document/app/custom-robot-access
 import program_logs
@@ -51,7 +54,27 @@ class DingTalk:
             .format(access_token, token[0], token[1])
         return self.url
 
+    def getFromENV(self):
+        e = getenv.getDingTalk()
+        if e is None:
+            program_logs.print1("钉钉环境变量不存在")
+            return False
+        else:
+            self.access_token = e[0]
+            self.secret = e[1]
+            self.url = self.getUrl(self.access_token,
+                                   self.secret)
+            program_logs.print1(self.access_token)
+            program_logs.print1(self.secret)
+            program_logs.print1(self.url)
+            return True
+
     def getFromFiles(self, path=""):
+        if not os.path.exists(path + 'wh_access_token.dingtalk') or \
+                not os.path.exists(path + 'wh_secret.dingtalk'):
+            program_logs.print1("钉钉配置文件不存在")
+            return
+
         with open(path + 'wh_access_token.dingtalk', 'r') as f:
             p = f.read().strip()
             if len(p) != 0:

@@ -15,7 +15,7 @@ def SaveConf(filename, content):
             print(e)
 
     fh = open(filename, 'w', encoding='utf-8')
-    fh.write(content)
+    fh.write(str(content))
     fh.close()
     print("保存{0}成功！".format(filename))
 
