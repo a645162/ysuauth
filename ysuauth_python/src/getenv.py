@@ -15,12 +15,31 @@ def getDingTalk():
     if wh_secret is None or wh_access_token is None:
         return None
     else:
-        return (wh_access_token, wh_secret)
+        return wh_access_token, wh_secret
 
 
-def getGit():
-    use_git = os.environ.get("USE_GIT")
+def getEnv_isUseDefaultGit():
+    use_git = os.environ.get("USE_DEFAULT_GIT")
     if use_git is None:
-        return False
-    else:
         return True
+    else:
+        use_git = str(use_git).strip()
+        if use_git == "False":
+            return False
+        return True
+
+
+def getSettingsPath():
+    path = os.environ.get("SETTINGS_PATH")
+    if path is None:
+        return ""
+    else:
+        return path
+
+
+def getLogsPath():
+    path = os.environ.get("LOGS_PATH")
+    if path is None:
+        return ""
+    else:
+        return path

@@ -24,6 +24,7 @@ if __name__ == "__main__":
     localLatestCommittime = 0
     if isExist:
         program_logs.print1("脚本目录已经存在")
+
         repo = git.Repo(savePath)
         tree = repo.tree()
         for blob in tree:
@@ -40,7 +41,7 @@ if __name__ == "__main__":
         # os.rmdir(savePath)
     print("代码最后一次提交时间为", localLatestCommittime)
     lastCommitTime = 0
-    commitTimePath = "gitversion/date.ysuauth"
+    commitTimePath = "gitversion/commitdate.ysuauth"
     if os.path.exists(commitTimePath):
         with open(commitTimePath, "r") as f:
             t = f.read()
