@@ -1,20 +1,20 @@
 import config
 import apptime
 import os
+# import GitPython
 from git import Repo
 from git.repo import Repo
 import git
 import shutil
 import datetime
+import getenv
 
 import program_logs
 
 if __name__ == "__main__":
-    gitPath = os.environ.get("REPO_URL")
-    gitBranch = os.environ.get("REPO_BRANCH")
-    if gitPath is None or gitBranch is None:
-        gitPath = 'https://gitee.com/a645162/ysuauth.git'
-        gitBranch = 'develop'
+    git_path = getenv.getGitPath()
+    git_url = git_path[0]
+    git_branch = git_path[1]
 
     config.SaveConf("gitversion/date.ysuauth", apptime.getNow())
     savePath = os.getcwd() + "/gitversion/allfiles"

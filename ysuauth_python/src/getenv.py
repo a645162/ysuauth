@@ -18,6 +18,17 @@ def getDingTalk():
         return wh_access_token, wh_secret
 
 
+def getGitPath():
+    gitPath = os.environ.get("REPO_URL")
+    gitBranch = os.environ.get("REPO_BRANCH")
+
+    if gitPath is None or gitBranch is None:
+        gitPath = 'https://gitee.com/a645162/ysuauth.git'
+        gitBranch = 'develop'
+
+    return gitPath, gitBranch
+
+
 def getEnv_isUseDefaultGit():
     use_git = os.environ.get("USE_DEFAULT_GIT")
     if use_git is None:
@@ -39,6 +50,14 @@ def getSettingsPath():
 
 def getLogsPath():
     path = os.environ.get("LOGS_PATH")
+    if path is None:
+        return ""
+    else:
+        return path
+
+
+def getBasePath():
+    path = os.environ.get("BASE_PATH")
     if path is None:
         return ""
     else:

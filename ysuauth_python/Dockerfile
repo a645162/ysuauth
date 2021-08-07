@@ -6,6 +6,8 @@ LABEL AUTHOR = "Haomin Kong" \
 
 WORKDIR /ysuauth
 
+ENV BASE_PATH="/ysuauth"
+
 ENV REPO_URL="https://gitee.com/a645162/ysuauth.git"
 ENV REPO_BRANCH="develop"
 #ENV REPO_BRANCH=master
