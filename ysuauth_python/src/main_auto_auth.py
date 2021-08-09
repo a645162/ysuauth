@@ -31,15 +31,16 @@ if config.isFileExist(restartFilename):
 program_logs.print1('程序开始运行')
 
 docker_status = getenv.is_docker()
+settings_path = getenv.getSettingsPath()
 
 dt = DingTalk()
 
 if dt.getFromENV():
     program_logs.print1("从ENV中获取钉钉配置成功！")
 else:
-    extraPath = ""
+    extraPath = "test/settings/"
     if docker_status:
-        extraPath = "/ysuauth/settings/"
+        extraPath = settings_path
     dt.getFromFiles(extraPath)
 
 delayTime = 10
@@ -156,7 +157,7 @@ else:
                         .format(len(users1)))
 iniPath = "users.ini"
 if docker_status:
-    iniPath = "/ysuauth/settings/" + iniPath
+    iniPath = settings_path + "/" + iniPath
 users1 = parse_user.getUsersFromFile(iniPath)
 if users1 is None:
     program_logs.print1("No any users!", True)
@@ -172,7 +173,7 @@ if len(users) == 0:
     exit(1)
 
 
-def loginUser(users):
+def login_user(users):
     for user in users:
         supports = user["support"].split(",")
         supports = [x for x in supports if int(x) in range(4)]
@@ -220,7 +221,7 @@ if __name__ == "__main__":
                     datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S')
             if last != 4 and last != 1:
                 last = 1
-            loginUser(users)
+            login_user(users)
         else:
             if last != 2:
                 program_logs.print1("Turn to connected!")
@@ -266,6 +267,13 @@ if __name__ == "__main__":
             program_logs.print1("检测到重启程序指令。")
             program_logs.print1("跳出检测循环。")
             program_logs.print1("-----------------------------------------------------")
+            break
+
+        if config.isFileExist("reboot.ysuauth"):
+            program_logs.print1("检测到重启系统指令。")
+            program_logs.print1("结束程序。")
+            program_logs.print1("-----------------------------------------------------")
+            exit(1)
             break
 
         time.sleep(10)

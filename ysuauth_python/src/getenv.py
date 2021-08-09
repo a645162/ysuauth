@@ -13,6 +13,7 @@ def is_git_mode():
     return os.environ.get("DOCKER") \
            or os.path.exists("gitmode") \
            or os.path.exists("/ysuauth/gitmode") \
+           or os.path.exists(getBasePath() + "/docker_status") \
            or d == "True"
 
 

@@ -4,8 +4,6 @@ base_directory="/ysuauth"
 
 mode_file="$base_directory/mode.ysuauth"
 
-
-
 #检测网络链接畅通
 function network() {
   #超时时间
@@ -40,12 +38,8 @@ if [ -f "$mode_file" ]; then
   touch "mode_file"
 fi
 
-cat /dev/null >"$mode_file"
-
-echo "test ddd sfafaf " >>"$mode_file"
-
-
-
+# cat /dev/null > "$mode_file"
+echo "( $(date "+%Y-%m-%d %H:%M:%S") ) RUN entrypoint" >> "$mode_file"
 
 # 判断是否已经Update
 if [ ! -f "$BASE_PATH/git/ready.ysuauth" ]; then
@@ -61,6 +55,9 @@ else
   script_directory="$base_directory/src/"
 fi
 
-
 cd $script_directory || exit
 python3 "autoauth.py"
+cd $base_directory || exit
+python3 "update.py"
+
+reboot
