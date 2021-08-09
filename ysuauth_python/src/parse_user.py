@@ -19,7 +19,7 @@ def netTypeToString(type):
 
 def getUsersFromEnv():
     users = []
-    u = getenv.getUser()
+    u = getenv.get_user()
 
     if u is None or len(u) == 0:
         return None

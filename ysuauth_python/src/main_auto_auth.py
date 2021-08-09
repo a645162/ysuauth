@@ -21,6 +21,8 @@ import time_p
 import ntp
 import ntp_hosts
 
+import getenv
+
 restartFilename = "restart.ysuauth"
 if config.isFileExist(restartFilename):
     program_logs.print1('\t\t\t\t\t程序重启。')
@@ -28,7 +30,7 @@ if config.isFileExist(restartFilename):
 
 program_logs.print1('程序开始运行')
 
-docker_status = config.isFileExist("docker_status")
+docker_status = getenv.is_docker()
 
 dt = DingTalk()
 
@@ -223,7 +225,7 @@ if __name__ == "__main__":
             if last != 2:
                 program_logs.print1("Turn to connected!")
                 program_logs \
-                    .asynchronismPrintThread("Turn to connected!",
+                    .asynchronousPrintThread("Turn to connected!",
                                              my_ntp_hosts
                                              )
 

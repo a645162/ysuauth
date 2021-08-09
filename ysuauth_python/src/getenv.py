@@ -1,7 +1,22 @@
 import os
 
 
-def getUser(key="YSU_AUTH_USER"):
+def is_docker():
+    return os.environ.get("DOCKER") is not None
+
+
+def is_git_mode():
+    d = os.environ.get("USE_DEFAULT_GIT")
+    if d is None:
+        d = "False"
+
+    return os.environ.get("DOCKER") \
+           or os.path.exists("gitmode") \
+           or os.path.exists("/ysuauth/gitmode") \
+           or d == "True"
+
+
+def get_user(key="YSU_AUTH_USER"):
     return os.environ.get(key)
 
 
@@ -24,7 +39,7 @@ def getGitPath():
 
     if gitPath is None or gitBranch is None:
         gitPath = 'https://gitee.com/a645162/ysuauth.git'
-        gitBranch = 'develop'
+        gitBranch = 'master'
 
     return gitPath, gitBranch
 
@@ -53,12 +68,12 @@ def getLogsPath():
     if path is None:
         return ""
     else:
-        return path
+        return path.strip()
 
 
 def getBasePath():
     path = os.environ.get("BASE_PATH")
     if path is None:
-        return ""
+        return "~"
     else:
         return path

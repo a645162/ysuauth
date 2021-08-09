@@ -6,6 +6,8 @@ LABEL AUTHOR = "Haomin Kong" \
 
 WORKDIR /ysuauth
 
+ENV DOCKER="Haomin Kong"
+
 ENV BASE_PATH="/ysuauth"
 
 ENV REPO_URL="https://gitee.com/a645162/ysuauth.git"
@@ -16,8 +18,8 @@ ENV USE_DEFAULT_GIT = "True"
 
 ENV DOCKER="You are right!"
 
-ENV getLogsPath="/ysuauth/logs"
-ENV getSettingsPath="/ysuauth/settings"
+ENV LOGS_PATH="/ysuauth/logs"
+ENV SETTINGS_PATH="/ysuauth/settings"
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
     && apk add --no-cache build-base libffi-dev git \
@@ -34,16 +36,20 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && echo Haomin Kong >> docker_status \
     && echo "Asia/Shanghai" > /etc/timezone
 
+COPY src/getenv.py /ysuauth/getenv.py
 COPY entrypoint.sh entrypoint.sh
 COPY src/ /ysuauth/src
-RUN rm -rf /ysuauth/src/gitversion/allfiles
+
+RUN rm -rf /ysuauth/src/git
 RUN rm -rf /ysuauth/src/logs
-RUN rm -rf /ysuauth/src/gitversion
+RUN rm -rf /ysuauth/src/git
 #RUN mkdir /ysuauth/src/logs
 RUN chmod -R 777 /ysuauth/src/logs
 
 RUN mv /ysuauth/src/update.* /ysuauth/
 RUN rm -rf *restart.ysuauth
+
+RUN git clone -b $REPO_BRANCH $REPO_URL
 
 RUN python3 ntp_hosts.py
 
