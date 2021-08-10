@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/bin/bash
+
+#set -e
+
+
 
 base_directory="/ysuauth"
 if [ "$DOCKER" = "Haomin Kong" ]; then
@@ -32,11 +36,11 @@ network() {
   echo "$ret_code" >>"$mode_file"
 
   if [ "$ret_code" = "200" ]; then
-    echo "连接www.gitee.com正常"
+    echo "Connect www.gitee.com Ok!"
     #网络畅通
     return 1
   else
-    echo "无法连接到www.gitee.com"
+    echo "Fail to connect to www.gitee.com!"
     #网络不畅通
     return 0
   fi
@@ -53,9 +57,9 @@ fi
 
 # 判断是否已经Update
 if [ ! -f "$BASE_PATH/git/ready.ysuauth" ]; then
-  echo "检查时间："
+  echo "Check Time："
   more "$BASE_PATH/git/check_date.ysuauth"
-  echo "更新脚本执行完毕时间："
+  echo "Last end time："
   more "$BASE_PATH/git/update_date.ysuauth"
 else
   if [ "$USE_DEFAULT_GIT" = "True" ]; then
