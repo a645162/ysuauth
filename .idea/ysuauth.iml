@@ -5,6 +5,8 @@
       <excludeFolder url="file://$MODULE_DIR$/ysuauth_python/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/YSUAuth_Kotlin/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/YSUAuth_Kotlin/out" />
+      <excludeFolder url="file://$MODULE_DIR$/ysuauth_python/src/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/ysuauth_python/logs" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

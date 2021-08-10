@@ -49,4 +49,3 @@ __pycache__/
 docker-compose.yml
 docker.sh
 users.ini
-test/
