@@ -14,6 +14,8 @@ log_path = getenv.getLogsPath()
 if len(log_path) != 0:
     log_path += "/"
 
+
+
 logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
                     filename='{}.log'.format(
                         log_path + datetime.datetime.strftime(apptime.getNow(), 'ysuauth_%Y%m%d_%H%M%S')),

@@ -1,4 +1,5 @@
-FROM python:3.9.6-alpine
+FROM python:3.10.0rc1-alpine3.14
+#FROM python:3.9.6-alpine3.14
 MAINTAINER Haomin Kong
 
 LABEL AUTHOR = "Haomin Kong" \
@@ -22,6 +23,7 @@ ENV LOGS_PATH="/ysuauth/logs"
 ENV SETTINGS_PATH="/ysuauth/settings"
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+    && apk add --no-cache bash tzdata git moreutils curl jq openssh-client \
     && apk add --no-cache build-base libffi-dev git \
     # 我觉得吧，还是比较有必要用清华源的。
     && pip --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
@@ -37,21 +39,26 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && echo "Asia/Shanghai" > /etc/timezone
 
 COPY src/getenv.py /ysuauth/getenv.py
-COPY entrypoint.sh entrypoint.sh
+COPY entrypoint.sh /ysuauth/entrypoint.sh
 COPY src/ /ysuauth/src
 
-RUN rm -rf /ysuauth/src/git
-RUN rm -rf /ysuauth/src/logs
-RUN rm -rf /ysuauth/src/git
-#RUN mkdir /ysuauth/src/logs
-RUN chmod -R 777 /ysuauth/src/logs
+RUN rm -rf /ysuauth/src/logs; exit 0
+RUN rm -rf /ysuauth/src/git; exit 0
+RUN rm -rf /ysuauth/src/git; exit 0
+
+RUN mkdir $LOGS_PATH
+RUN mkdir $SETTINGS_PATH
+RUN chmod -R 777 $LOGS_PATH
 
 RUN mv /ysuauth/src/update.* /ysuauth/
-RUN rm -rf *restart.ysuauth
+RUN cp /ysuauth/src/getenv.* /ysuauth/
 
-RUN git clone -b $REPO_BRANCH $REPO_URL
+RUN rm -f /ysuauth/src/*restart.ysuauth
+RUN rm -f /ysuauth/src/*.log
 
-RUN python3 ntp_hosts.py
+# RUN #git clone -b $REPO_BRANCH $REPO_URL
+
+# RUN #python3 ntp_hosts.py
 
 ENTRYPOINT ["entrypoint.sh"]
 #CMD python3 autoauth.py
