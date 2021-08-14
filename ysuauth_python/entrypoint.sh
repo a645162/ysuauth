@@ -111,7 +111,7 @@ if [ "$mode" = "git" ]; then
   script_directory="$base_directory/remote/allfiles/ysuauth_python/src"
 else
   echo "最终决定！Local模式！"
-  script_directory="$base_directory/src/"
+  script_directory="$base_directory/src"
 fi
 
 cd "$script_directory" || exit

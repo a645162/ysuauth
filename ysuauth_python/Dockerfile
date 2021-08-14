@@ -2,8 +2,8 @@ FROM python:3.10.0rc1-alpine3.14
 #FROM python:3.9.6-alpine3.14
 MAINTAINER Haomin Kong
 
-LABEL AUTHOR = "Haomin Kong" \
-      VERSION = 2
+LABEL AUTHOR="Haomin Kong" \
+      VERSION=3
 
 WORKDIR /ysuauth
 
@@ -42,7 +42,7 @@ ENV REPO_URL="https://gitee.com/yskoala/ysuauth.git"
 ENV REPO_BRANCH="develop"
 #ENV REPO_BRANCH=master
 
-ENV USE_DEFAULT_GIT="True"
+#ENV USE_DEFAULT_GIT="True"
 #这俩有很大的区别啊！坑死我了！
 #ENV USE_DEFAULT_GIT = "True"
 
@@ -62,8 +62,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     # 我觉得吧，还是比较有必要用清华源的。
     && pip --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
     && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-#    && /usr/local/bin/python -m pip --no-cache-dir install --upgrade pip \
-    && pip --no-cache-dir install ping3 ntplib requests \
+    && pip --no-cache-dir install ping3 ntplib requests GitPython \
     && rm -rf ~/.cache/pip \
     && rm -rf /tmp/* \
 #    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
@@ -72,13 +71,14 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && echo Haomin Kong >> docker_status \
     && echo "Asia/Shanghai" > /etc/timezone
 
-# update.py需要用到的文件
-#COPY src/getenv.py /ysuauth/getenv.py
-#COPY src/ping_simple.py /ysuauth/ping_simple.py
-#COPY src/config.py /ysuauth/config.py
-#COPY src/apptime.py /ysuauth/apptime.py
+# 主要目的还是拷贝update.py
+# 主要是这里面的耦合太复杂了，都拷贝了吧！
+COPY src/*.py /ysuauth/
+COPY src/*.sh /ysuauth/
 
-COPY src/ /ysuauth
+COPY src/*.py /ysuauth/src
+COPY src/*.sh /ysuauth/src
+COPY src/*.list /ysuauth/src
 
 COPY entrypoint.sh /ysuauth/entrypoint.sh
 RUN chmod +x /ysuauth/entrypoint.sh
@@ -86,23 +86,16 @@ RUN chmod +x /ysuauth/entrypoint.sh
 RUN rm -rf /ysuauth/src/logs; exit 0
 RUN rm -rf /ysuauth/src/settings; exit 0
 RUN rm -rf /ysuauth/src/remote; exit 0
-RUN rm -f /ysuauth/src/*.ysuauth
+RUN rm -f /ysuauth/src/*.ysuauth; exit 0
 
-RUN cp -a src/ .
-RUN #cp -avx /ysuauth/src/*.* /ysuauth/
-
-RUN mkdir $LOGS_PATH
-RUN mkdir $SETTINGS_PATH
+RUN mkdir $LOGS_PATH; exit 0
+RUN mkdir $SETTINGS_PATH; exit 0
 RUN chmod -R 777 $LOGS_PATH
-
-RUN #mv /ysuauth/src/update.* /ysuauth/
-RUN #cp /ysuauth/src/getenv.* /ysuauth/
 
 RUN rm -f /ysuauth/src/*.log
 
-# RUN #git clone -b $REPO_BRANCH $REPO_URL
-
 # RUN #python3 ntp_hosts.py
 
+#ENV USE_DEFAULT_GIT="True"
+
 ENTRYPOINT ["/ysuauth/entrypoint.sh"]
-#CMD python3 auto_auth.py
