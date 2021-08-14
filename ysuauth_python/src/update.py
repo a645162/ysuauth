@@ -72,33 +72,45 @@ if __name__ == "__main__":
     if isExist and os.path.exists(git_dir + "/ready.ysuauth"):
         program_logs.print1("脚本目录已经存在")
 
-        repo = git.Repo(savePath)
+        ok = False
 
-        os.chdir(git_dir)
-        os.system('git remote update origin --prune')
-        repo.remotes.origin.fetch()
-
-        commits_diff = commits_diff(repo, git_branch)
-
-        if commits_diff[0] > 0:
-            program_logs.print1("???")
-            program_logs.print1("这只能pull回来啊？！")
-            program_logs.print1("pull回来的还能超前了？！")
-            program_logs.print1("删了重新clone吧？！")
+        try:
+            repo = git.Repo(savePath)
+        except:
+            program_logs.print1("原仓库存在问题！")
+            program_logs.print1("重新clone！")
             shutil.rmtree(savePath)
-            Repo.clone_from(git_path
-                            , to_path=savePath, branch=git_branch)
-        elif commits_diff[1] == 0:
-            program_logs.print1("git检查完毕！")
-            program_logs.print1("当前版本为最新版本！")
-        else:
-            program_logs.print1("开始更新！")
-            os.system("git pull")
+            getenv.create_dir_not_exist(savePath)
+            Repo.clone_from(git_url, to_path=savePath, branch=git_branch)
+            repo = git.Repo(savePath)
+            ok = True
+
+        if not ok:
+            os.chdir(git_dir)
+            os.system('git remote update origin --prune')
+            repo.remotes.origin.fetch()
+
+            commits_diff = commits_diff(repo, git_branch)
+
+            if commits_diff[0] > 0:
+                program_logs.print1("???")
+                program_logs.print1("这只能pull回来啊？！")
+                program_logs.print1("pull回来的还能超前了？！")
+                program_logs.print1("删了重新clone吧？！")
+                shutil.rmtree(savePath)
+                getenv.create_dir_not_exist(savePath)
+                Repo.clone_from(git_url, to_path=savePath, branch=git_branch)
+            elif commits_diff[1] == 0:
+                program_logs.print1("git检查完毕！")
+                program_logs.print1("当前版本为最新版本！")
+            else:
+                program_logs.print1("开始更新！")
+                os.system("git pull")
     else:
         if isExist:
             shutil.rmtree(savePath)
-        Repo.clone_from(git_path
-                        , to_path=savePath, branch=git_branch)
+        getenv.create_dir_not_exist(savePath)
+        Repo.clone_from(git_url, to_path=savePath, branch=git_branch)
 
     config.SaveConf(git_dir + "/update_date.ysuauth", apptime.getNow())
     program_logs.print1("更新脚本执行完毕！")
