@@ -297,9 +297,9 @@ if __name__ == "__main__":
 
                 thread = \
                     dingTalkThread(
-                        "##### 断网时间为：" + disConnectedTime
-                        + "##### " + betweenDisconnectedTime
-                        + "##### " + betweenConnectedTime, True, my_ntp_hosts, threadPool)
+                        " \n##### 断网时间为：" + disConnectedTime
+                        + " \n##### " + betweenDisconnectedTime
+                        + " \n##### " + betweenConnectedTime, True, my_ntp_hosts, threadPool)
                 thread.start()
                 threadPool.append(thread)
                 disConnectedTime = ""
