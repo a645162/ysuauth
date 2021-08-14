@@ -1,5 +1,5 @@
-FROM python:3.10.0rc1-alpine3.14
-#FROM python:3.9.6-alpine3.14
+#FROM python:3.10.0rc1-alpine3.14
+FROM python:3.9.6-alpine3.14
 MAINTAINER Haomin Kong
 
 LABEL AUTHOR="Haomin Kong" \
@@ -39,7 +39,8 @@ ENV DOCKER="Haomin Kong"
 ENV BASE_PATH="/ysuauth"
 
 ENV REPO_URL="https://gitee.com/yskoala/ysuauth.git"
-ENV REPO_BRANCH="develop"
+#ENV REPO_BRANCH="develop"
+ENV REPO_BRANCH="beta"
 #ENV REPO_BRANCH=master
 
 #ENV USE_DEFAULT_GIT="True"
@@ -96,6 +97,8 @@ RUN rm -f /ysuauth/src/*.log
 
 # RUN #python3 ntp_hosts.py
 
-#ENV USE_DEFAULT_GIT="True"
+ENV USE_DEFAULT_GIT="True"
+#ENV DEBUG="True"
+#ENV IGNORE_WORK_TIME="True"
 
 ENTRYPOINT ["/ysuauth/entrypoint.sh"]

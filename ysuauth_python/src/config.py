@@ -1,21 +1,21 @@
 import os
 import time
-
+import program_logs
 
 def getDirAndFileName(path):
     paths = path.split("/")
     l = len(paths)
-    dir = ""
+    dir_path = ""
     for i in range(l - 1):
         t = paths[i].strip()
         if len(t) != 0:
-            dir += "/" + t
+            dir_path += "/" + t
     filename = paths[l - 1]
 
-    print(dir)
-    print(filename)
+    program_logs.print1(dir_path)
+    program_logs.print1(filename)
 
-    return dir, filename
+    return dir_path, filename
 
 
 def getFilenameAndExtension(filename):

@@ -10,15 +10,26 @@ def is_git_mode():
     if d is None:
         d = "False"
 
-    return os.environ.get("DOCKER") \
-           or os.path.exists("gitmode") \
-           or os.path.exists("/ysuauth/gitmode") \
-           or os.path.exists(getBasePath() + "/docker_status") \
-           or d == "True"
+    return \
+        os.environ.get("DOCKER") \
+        or os.path.exists("git_mode") \
+        or os.path.exists("git_mode.ysuauth") \
+        or os.path.exists("/ysuauth/git_mode") \
+        or os.path.exists("/ysuauth/git_mode.ysuauth") \
+        or os.path.exists(getBasePath() + "/docker_status") \
+        or d == "True"
 
 
 def is_debug_mode():
     d = os.environ.get("DEBUG")
+    if d is None:
+        d = "False"
+
+    return d.strip() == "True"
+
+
+def is_ignore_work_time():
+    d = os.environ.get("IGNORE_WORK_TIME")
     if d is None:
         d = "False"
 
@@ -48,7 +59,7 @@ def getGitPath():
 
     if gitPath is None or gitBranch is None:
         gitPath = 'https://gitee.com/yskoala/ysuauth.git'
-        gitBranch = 'develop'
+        gitBranch = 'beta'
 
     return gitPath, gitBranch
 
