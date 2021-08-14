@@ -1,5 +1,5 @@
-FROM python:3.10.0rc1-alpine3.14
-#FROM python:3.9.6-alpine3.14
+#FROM python:3.10.0rc1-alpine3.14
+FROM python:3.9.6-alpine3.14
 MAINTAINER Haomin Kong
 
 LABEL AUTHOR="Haomin Kong" \
@@ -97,8 +97,8 @@ RUN rm -f /ysuauth/src/*.log
 
 # RUN #python3 ntp_hosts.py
 
-#ENV USE_DEFAULT_GIT="True"
-ENV DEBUG="True"
-ENV IGNORE_WORK_TIME="True"
+ENV USE_DEFAULT_GIT="True"
+#ENV DEBUG="True"
+#ENV IGNORE_WORK_TIME="True"
 
 ENTRYPOINT ["/ysuauth/entrypoint.sh"]
