@@ -39,7 +39,8 @@ ENV DOCKER="Haomin Kong"
 ENV BASE_PATH="/ysuauth"
 
 ENV REPO_URL="https://gitee.com/yskoala/ysuauth.git"
-ENV REPO_BRANCH="develop"
+#ENV REPO_BRANCH="develop"
+ENV REPO_BRANCH="beta"
 #ENV REPO_BRANCH=master
 
 #ENV USE_DEFAULT_GIT="True"

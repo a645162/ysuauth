@@ -48,7 +48,7 @@ def getGitPath():
 
     if gitPath is None or gitBranch is None:
         gitPath = 'https://gitee.com/yskoala/ysuauth.git'
-        gitBranch = 'develop'
+        gitBranch = 'beta'
 
     return gitPath, gitBranch
 
