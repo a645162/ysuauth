@@ -98,5 +98,7 @@ RUN rm -f /ysuauth/src/*.log
 # RUN #python3 ntp_hosts.py
 
 #ENV USE_DEFAULT_GIT="True"
+ENV DEBUG="True"
+ENV IGNORE_WORK_TIME="True"
 
 ENTRYPOINT ["/ysuauth/entrypoint.sh"]
