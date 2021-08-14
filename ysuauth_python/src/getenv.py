@@ -39,8 +39,8 @@ def getGitPath():
     gitBranch = os.environ.get("REPO_BRANCH")
 
     if gitPath is None or gitBranch is None:
-        gitPath = 'https://gitee.com/a645162/ysuauth.git'
-        gitBranch = 'master'
+        gitPath = 'https://gitee.com/ysukoala/ysuauth.git'
+        gitBranch = 'develop'
 
     return gitPath, gitBranch
 

@@ -54,3 +54,7 @@ docker1.sh
 *.logs
 *restart.ysuauth
 *date.ysuauth
+
+*(*-*-*_*-*-*)*
+*(*-*-* *-*-*)*
+*.ysuauth
