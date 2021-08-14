@@ -2,7 +2,7 @@
 
 #set -e
 
-
+echo "USE_DEFAULT_GIT = $USE_DEFAULT_GIT"
 
 base_directory="/ysuauth"
 if [ "$DOCKER" = "Haomin Kong" ]; then
@@ -10,7 +10,6 @@ if [ "$DOCKER" = "Haomin Kong" ]; then
 else
   base_directory=$(pwd)
 fi
-
 
 #mode_file="$base_directory/log/mode.ysuauth"
 mode_file="$LOGS_PATH/mode.ysuauth"
@@ -23,64 +22,101 @@ fi
 # cat /dev/null > "$mode_file"
 echo "( $(date "+%Y-%m-%d %H:%M:%S") ) RUN entrypoint" >>"$mode_file"
 
+[ -f "$BASE_PATH/remote/ready.ysuauth" ] && isUpdate=true || isUpdate=false
+
 #检测网络链接畅通
 network() {
   #超时时间
-  timeout=1
+  local timeout=1
 
   #目标网站
-  target=www.gitee.com
+  local target=www.baidu.com
 
+  echo "curl -I -s --connect-timeout ${timeout} ${target} -w %{http_code}"
   #获取响应状态码
-  ret_code=$(curl -I -s --connect-timeout ${timeout} ${target} -w %{http_code} | tail -n1)
-  echo "$ret_code" >>"$mode_file"
+
+  local ret_code
+  ret_code="$(curl -I -s --connect-timeout "${timeout}" "${target}" -w "%{http_code}" | tail -n1)"
+  #  echo "$ret_code" >>"$mode_file"
+  echo "$ret_code"
+
+  #curl -I -s --connect-timeout 1 www.gitee.com -w %{http_code} | tail -n1
 
   if [ "$ret_code" = "200" ]; then
-    echo "Connect www.gitee.com Ok!"
+    echo "Connect $target Ok!"
     #网络畅通
-    return 1
-  else
-    echo "Fail to connect to www.gitee.com!"
-    #网络不畅通
     return 0
+  else
+    echo "Fail to connect to $target!"
+    #网络不畅通
+    return 1
   fi
 
-  return 0
+  return 1
 }
 
-network
-if [ $? -eq 0 ]; then
-  mode="git"
-else
-  mode="local"
-fi
+echo "isUpdate = $isUpdate"
 
 # 判断是否已经Update
-if [ ! -f "$BASE_PATH/git/ready.ysuauth" ]; then
+if [ "$isUpdate" = true ]; then
   echo "Check Time："
-  more "$BASE_PATH/git/check_date.ysuauth"
+  more "$BASE_PATH/remote/check_date.ysuauth"
   echo "Last end time："
-  more "$BASE_PATH/git/update_date.ysuauth"
+  more "$BASE_PATH/remote/update_date.ysuauth"
+  mode="git"
 else
+  echo "还未clone仓库"
+  mode="local"
+
   if [ "$USE_DEFAULT_GIT" = "True" ]; then
-    python3 "update.py" &
+    echo "设置->默认使用Git版本"
+    if network; then
+      echo "联网状态->已经连接到互联网！"
+      echo "Update脚本->前台阻塞执行Update！"
+      python3 "update.py"
+      [ -f "$BASE_PATH/remote/ready.ysuauth" ] && isUpdate=true || isUpdate=false
+      if [ "$isUpdate" = true ]; then
+        echo "Update脚本->更新完毕！"
+        mode="git"
+      else
+        echo "Update脚本->更新失败！"
+        echo "Update脚本->后台静默等待网络并执行Update！"
+        python3 "update.py" -w &
+        mode="local"
+      fi
+    else
+      echo "联网状态->还未连接到互联网！"
+      echo "Update脚本->后台静默等待网络并执行Update！"
+      python3 "update.py" -w &
+      mode="local"
+    fi
   fi
+
+fi
+
+echo "mode = $mode"
+
+if ! ping -c 5 www.gitee.com; then
+  echo "Can't ping to www.gitee.com"
   mode="local"
 fi
 
 if [ ! "$USE_DEFAULT_GIT" = "True" ] || [ ! "$mode" = "git" ]; then
+
   mode="local"
 fi
 
 if [ "$mode" = "git" ]; then
-  script_directory="$base_directory/git/allfiles/ysuauth_python/src"
+  echo "最终决定！Git模式！"
+  script_directory="$base_directory/remote/allfiles/ysuauth_python/src"
 else
+  echo "最终决定！Local模式！"
   script_directory="$base_directory/src/"
 fi
 
-cd $script_directory || exit
-python3 "autoauth.py"
-cd $base_directory || exit
+cd "$script_directory" || exit
+python3 "auto_auth.py"
+cd "$base_directory" || exit
 python3 "update.py"
 
 reboot

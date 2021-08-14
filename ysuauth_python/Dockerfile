@@ -42,7 +42,9 @@ ENV REPO_URL="https://gitee.com/a645162/ysuauth.git"
 ENV REPO_BRANCH="develop"
 #ENV REPO_BRANCH=master
 
-ENV USE_DEFAULT_GIT = "True"
+ENV USE_DEFAULT_GIT="True"
+#这俩有很大的区别啊！坑死我了！
+#ENV USE_DEFAULT_GIT = "True"
 
 ENV DOCKER="You are right!"
 
@@ -56,7 +58,7 @@ RUN echo "[global] \
     " > /etc/pip.conf
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
-    && apk add --no-cache build-base libffi-dev git tzdata bash \
+    && apk add --no-cache build-base libffi-dev git tzdata bash curl \
     # 我觉得吧，还是比较有必要用清华源的。
     && pip --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
     && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
@@ -70,24 +72,32 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && echo Haomin Kong >> docker_status \
     && echo "Asia/Shanghai" > /etc/timezone
 
-COPY src/getenv.py /ysuauth/getenv.py
-COPY src/ /ysuauth/src
+# update.py需要用到的文件
+#COPY src/getenv.py /ysuauth/getenv.py
+#COPY src/ping_simple.py /ysuauth/ping_simple.py
+#COPY src/config.py /ysuauth/config.py
+#COPY src/apptime.py /ysuauth/apptime.py
+
+COPY src/ /ysuauth
 
 COPY entrypoint.sh /ysuauth/entrypoint.sh
 RUN chmod +x /ysuauth/entrypoint.sh
 
 RUN rm -rf /ysuauth/src/logs; exit 0
-RUN rm -rf /ysuauth/src/git; exit 0
-RUN rm -rf /ysuauth/src/git; exit 0
+RUN rm -rf /ysuauth/src/settings; exit 0
+RUN rm -rf /ysuauth/src/remote; exit 0
+RUN rm -f /ysuauth/src/*.ysuauth
+
+RUN cp -a src/ .
+RUN #cp -avx /ysuauth/src/*.* /ysuauth/
 
 RUN mkdir $LOGS_PATH
 RUN mkdir $SETTINGS_PATH
 RUN chmod -R 777 $LOGS_PATH
 
-RUN mv /ysuauth/src/update.* /ysuauth/
-RUN cp /ysuauth/src/getenv.* /ysuauth/
+RUN #mv /ysuauth/src/update.* /ysuauth/
+RUN #cp /ysuauth/src/getenv.* /ysuauth/
 
-RUN rm -f /ysuauth/src/*restart.ysuauth
 RUN rm -f /ysuauth/src/*.log
 
 # RUN #git clone -b $REPO_BRANCH $REPO_URL
@@ -95,4 +105,4 @@ RUN rm -f /ysuauth/src/*.log
 # RUN #python3 ntp_hosts.py
 
 ENTRYPOINT ["/ysuauth/entrypoint.sh"]
-#CMD python3 autoauth.py
+#CMD python3 auto_auth.py

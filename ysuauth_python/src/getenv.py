@@ -75,6 +75,11 @@ def getLogsPath():
 def getBasePath():
     path = os.environ.get("BASE_PATH")
     if path is None:
-        return "~"
+        return os.getcwd()
     else:
+        create_dir_not_exist(path)
         return path
+
+def create_dir_not_exist(path):
+    if not os.path.exists(path):
+        os.mkdir(path)

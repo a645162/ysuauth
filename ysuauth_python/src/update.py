@@ -2,12 +2,17 @@ import config
 import apptime
 import os
 # import GitPython
-from git import Repo
+# from git import Repo
 from git.repo import Repo
 import git
 import shutil
 import datetime
 import getenv
+import ping_simple
+import time
+
+import getopt
+import sys
 
 import program_logs
 
@@ -21,8 +26,36 @@ def commits_diff(repo, branch):
 
 
 if __name__ == "__main__":
+    argv = sys.argv[1:]
+    needWait = False
+    try:
+        options, args = getopt.getopt(argv, "w", ["wait"])
+    except getopt.GetoptError:
+        sys.exit()
+
+    for option, value in options:
+        if option in ("-w", "--wait"):
+            program_logs.print1("support wait connection!")
+            needWait = True
+            break
+
+    ping_value = 0
+
+    while True:
+        ping_value = ping_simple.ping_host("gitee.com")
+        if not (needWait and ping_value == 0):
+            break
+        time.sleep(1)
+
+    if ping_value == 0:
+        exit(1)
+
+    program_logs.print1("已经联网！")
+    program_logs.print1("即将开始Update")
+
     base_path = getenv.getBasePath()
-    git_dir = base_path + "/git"
+    git_dir = base_path + "/remote"
+    getenv.create_dir_not_exist(git_dir)
 
     git_path = getenv.getGitPath()
     git_url = git_path[0]
@@ -31,6 +64,7 @@ if __name__ == "__main__":
     config.SaveConf(git_dir + "/check_date.ysuauth", apptime.getNow())
 
     savePath = git_dir + "/allfiles"
+    # getenv.create_dir_not_exist(savePath)
     program_logs.print1("将git仓库保存到" + savePath)
 
     isExist = os.path.exists(savePath)
@@ -40,6 +74,7 @@ if __name__ == "__main__":
 
         repo = git.Repo(savePath)
 
+        os.chdir(git_dir)
         os.system('git remote update origin --prune')
         repo.remotes.origin.fetch()
 
@@ -59,8 +94,9 @@ if __name__ == "__main__":
         else:
             program_logs.print1("开始更新！")
             os.system("git pull")
-    elif isExist:
-        shutil.rmtree(savePath)
+    else:
+        if isExist:
+            shutil.rmtree(savePath)
         Repo.clone_from(git_path
                         , to_path=savePath, branch=git_branch)
 
