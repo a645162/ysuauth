@@ -62,7 +62,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     # 我觉得吧，还是比较有必要用清华源的。
     && pip --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
     && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip --no-cache-dir install ping3 ntplib requests GitPython \
+    && pip --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
     && rm -rf ~/.cache/pip \
     && rm -rf /tmp/* \
 #    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
@@ -76,9 +76,9 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 COPY src/*.py /ysuauth/
 COPY src/*.sh /ysuauth/
 
-COPY src/*.py /ysuauth/src
-COPY src/*.sh /ysuauth/src
-COPY src/*.list /ysuauth/src
+COPY src/*.py /ysuauth/src/
+COPY src/*.sh /ysuauth/src/
+COPY src/*.list /ysuauth/src/
 
 COPY entrypoint.sh /ysuauth/entrypoint.sh
 RUN chmod +x /ysuauth/entrypoint.sh

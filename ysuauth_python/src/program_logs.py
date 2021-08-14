@@ -14,7 +14,8 @@ log_path = getenv.getLogsPath()
 if len(log_path) != 0:
     log_path += "/"
 
-
+debug = getenv.is_debug_mode()
+black_list = ["userId"]
 
 logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
                     filename='{}.log'.format(
@@ -28,12 +29,25 @@ logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
 
 
 def print1(text="", error=False, timestamp=0):
-    if isinstance(text, list):
+    if type(text) == list:
         l = text
         text = ""
         for i in l:
             text += str(i) + "\n"
         text = text.strip()
+
+    if not debug:
+        for i in black_list:
+            key = i.strip()
+            if len(key) == 0:
+                continue
+            if text.find(key) != 0:
+                print("包含{}，拒绝显示！".format(key))
+                return
+        # if text.find("userId") != 0:
+        #     print("包含userId,拒绝显示")
+        #     return
+
     if timestamp == 0:
         timestamp = datetime.datetime.now()
     else:

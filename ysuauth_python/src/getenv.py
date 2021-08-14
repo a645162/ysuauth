@@ -17,6 +17,14 @@ def is_git_mode():
            or d == "True"
 
 
+def is_debug_mode():
+    d = os.environ.get("DEBUG")
+    if d is None:
+        d = "False"
+
+    return d.strip() == "True"
+
+
 def get_user(key="YSU_AUTH_USER"):
     return os.environ.get(key)
 
@@ -79,6 +87,7 @@ def getBasePath():
     else:
         create_dir_not_exist(path)
         return path
+
 
 def create_dir_not_exist(path):
     if not os.path.exists(path):

@@ -17,7 +17,6 @@ import program_logs
 import parseDingTalkJson
 import config
 
-import time_p
 import ntp
 import ntp_hosts
 
@@ -55,17 +54,17 @@ my_ntp_hosts = my_ntp_hosts_class.getHosts()
 
 
 class dingTalkThread(threading.Thread):
-    def __init__(self, time, type=False, ntp_hosts=None, threadPool=None):
+    def __init__(self, time1, type1=False, ntp_hosts1=None, thread_pool=None):
         threading.Thread.__init__(self)
-        self.time = time
-        self.type = type
-        self.ntp_hosts = ntp_hosts
-        self.threadPool = threadPool
+        self.time = time1
+        self.type = type1
+        self.ntp_hosts = ntp_hosts1
+        self.threadPool = thread_pool
 
     def run(self):
-        nowtime = datetime.datetime.now()
+        now_time = datetime.datetime.now()
         program_logs.print1("\t\t\t启动钉钉发信线程({})："
-                            .format(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
+                            .format(datetime.datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S'))
                             + self.name)
         typeStr = "连接成功"
 
@@ -76,7 +75,7 @@ class dingTalkThread(threading.Thread):
                     "title": "联网成功",
                     "text": "#### 连网时间 @全体成员 \n > 联网时间为{}\n"
                             " > ![icon](https://lxy.ysu.edu.cn/images/lxy/bottom_logo.gif)\n > ###### {} 发送\n"
-                            "[燕山大学网络](http://auth.ysu.edu.cn) \n".format(self.time, nowtime)
+                            "[燕山大学网络](http://auth.ysu.edu.cn) \n".format(self.time, now_time)
                 },
                 "at": {
                     "isAtAll": True
@@ -84,13 +83,24 @@ class dingTalkThread(threading.Thread):
             }
         else:
             typeStr = "断网时间"
+            time_diff = apptime.dateDiff(apptime.parse_str2datetime(self.time), now_time)
+
+            diff_str = ""
+            if time_diff[0] != 0:
+                diff_str = str(time_diff[0]) + "天 "
+            diff_str += str(time_diff[1]) + "时 "
+            diff_str += str(time_diff[2]) + "分 "
+            diff_str += str(time_diff[3]) + "秒 "
+
+            program_logs.print1("此次断网时长为：" + diff_str)
+
             msg_dict = {
                 "msgtype": "markdown",
                 "markdown": {
                     "title": "断网时间",
-                    "text": "#### 断网时间 @全体成员 \n > 断网时间为{}\n"
+                    "text": "#### 断网时间 @全体成员 \n > 断网时间为{}\n 这次断网时长为 {}"
                             " > ![icon](https://lxy.ysu.edu.cn/images/lxy/bottom_logo.gif)\n > ###### {} 发送\n"
-                            "[燕山大学网络](http://auth.ysu.edu.cn) \n".format(self.time, nowtime)
+                            "[燕山大学网络](http://auth.ysu.edu.cn) \n".format(self.time, diff_str, now_time)
                 },
                 "at": {
                     "isAtAll": True
@@ -98,12 +108,12 @@ class dingTalkThread(threading.Thread):
             }
         program_logs.print1(
             "\t\t\t延时{}秒后发送{}{}的消息！"
-                .format(str(delayTime), self.time, typeStr)
+            .format(str(delayTime), self.time, typeStr)
         )
         time.sleep(delayTime)
         program_logs.print1(
             "\t\t\t延时完毕开始发送{}{}的消息！"
-                .format(self.time, typeStr)
+            .format(self.time, typeStr)
         )
         ok = False
         while not ok:
@@ -123,7 +133,7 @@ class dingTalkThread(threading.Thread):
                 time.sleep(20)
                 raise e
             else:
-                if f != None and len(f.text) != 0:
+                if f is not None and len(f.text) != 0:
                     jsonStr = str(f.text)
                     ok = parseDingTalkJson.isDingTalkOk(jsonStr)
                     if not ok:
@@ -136,9 +146,9 @@ class dingTalkThread(threading.Thread):
                     program_logs.print1("取不到返回吗？！", True)
                     ok = True
 
-        nowtime = datetime.datetime.now()
+        now_time = datetime.datetime.now()
         program_logs.print1("\t\t\t退出钉钉发信线程({})："
-                            .format(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S'))
+                            .format(datetime.datetime.strftime(now_time, '%Y年%m月%d日 %H:%M:%S'))
                             + self.name)
         if self.threadPool is not None:
             self.threadPool.remove(self)
@@ -173,8 +183,8 @@ if len(users) == 0:
     exit(1)
 
 
-def login_user(users):
-    for user in users:
+def login_user(all_user):
+    for user in all_user:
         supports = user["support"].split(",")
         supports = [x for x in supports if int(x) in range(4)]
 
@@ -184,8 +194,8 @@ def login_user(users):
                 program_logs.print1("连接" + str(re))
                 break
             else:
-                program_logs.print1(parse_user.netTypeToString(support) + "失败(" + re[1] + ")"
-                                    , True)
+                program_logs.print1(parse_user.netTypeToString(support) + "失败(" + re[1] + ")",
+                                    True)
 
 
 last = -1
@@ -198,9 +208,10 @@ if __name__ == "__main__":
         hour = now.hour
         dayOfWeek = now.isoweekday()
         inYsuWeekend_Normal = dayOfWeek == 5 or dayOfWeek == 6
-        inYsuWeekend_Holiday = (dayOfWeek == 5 and apptime.isInTime((6, 1), (23, 59))) \
-                               or dayOfWeek == 6 \
-                               or (dayOfWeek == 7 and apptime.isInTime((0, 0), (23, 25)))
+        inYsuWeekend_Holiday =\
+            (dayOfWeek == 5 and apptime.isInTime((6, 1), (23, 59))) \
+            or dayOfWeek == 6 \
+            or (dayOfWeek == 7 and apptime.isInTime((0, 0), (23, 25)))
         inYsuWeekend = inYsuWeekend_Holiday
         inWorkTime_weekday = (not inYsuWeekend) and apptime.isInTime((6, 1), (23, 28))
         inWorkTime_weekend = inYsuWeekend and apptime.isInTime((6, 1), (23, 59))
@@ -218,7 +229,7 @@ if __name__ == "__main__":
             program_logs.print1("Not Connect!!!!!")
             if last == 2:
                 disConnectedTime = \
-                    datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S')
+                    datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
             if last != 4 and last != 1:
                 last = 1
             login_user(users)
@@ -241,13 +252,12 @@ if __name__ == "__main__":
                 else:
                     ntp_time_str = \
                         datetime.datetime.fromtimestamp(ntp_timestamp) \
-                            .strftime("%Y年%m月%d日 %H:%M:%S")
+                        .strftime("%Y-%m-%d %H:%M:%S")
 
                 thread = \
                     dingTalkThread(
-                        datetime.datetime.strftime(now, '%Y年%m月%d日 %H:%M:%S')
-                        + "\n NTP时间为：" + ntp_time_str
-                        ,
+                        datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
+                        + "\n NTP时间为：" + ntp_time_str,
                         False,
                         my_ntp_hosts,
                         threadPool

@@ -2,6 +2,8 @@ import re
 import json
 import req
 
+import program_logs
+import getenv
 
 class YSUNetAuth():
     def __init__(self):
