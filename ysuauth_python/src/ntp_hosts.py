@@ -31,7 +31,7 @@ class ntp_hosts():
         if len(path) == 0:
             path = "ntp.list"
 
-        with open(path, "w")as f:
+        with open(path, "w") as f:
             f.write("\n")
 
     def writeToFile(self, path=""):
@@ -41,7 +41,7 @@ class ntp_hosts():
         s = ""
         for i in self.hosts:
             s += i.host_url + "\n"
-        with open(path, "w")as f:
+        with open(path, "w") as f:
             f.write(s)
 
     def getFromFiles(self, path=""):
@@ -50,7 +50,7 @@ class ntp_hosts():
 
         if os.path.exists(path):
             h = []
-            with open(path, "r")as f:
+            with open(path, "r") as f:
                 s = f.read()
                 for i1 in s.split("\n"):
                     i = i1.strip()
@@ -78,7 +78,7 @@ class ntp_hosts():
                     .format(path)
             )
             h = []
-            with open(path, "r")as f:
+            with open(path, "r") as f:
                 s = f.read()
                 for i1 in s.split("\n"):
                     i = i1.strip()

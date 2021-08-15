@@ -42,6 +42,19 @@ def dateDiff(a, b):
     return d.days, hour, minutes, seconds
 
 
+def getDateDiffStr(a, b):
+    time_diff = dateDiff(a, b)
+
+    diff_str = ""
+    if time_diff[0] != 0:
+        diff_str = str(time_diff[0]) + "天 "
+    diff_str += str(time_diff[1]) + "时 "
+    diff_str += str(time_diff[2]) + "分 "
+    diff_str += str(time_diff[3]) + "秒 "
+
+    return diff_str
+
+
 if __name__ == "__main__":
     t1 = datetime.datetime(2016, 3, 31, 0)
     t2 = datetime.datetime(2016, 6, 8, 2)

@@ -1,6 +1,8 @@
 import os
 import getenv
 import platform
+import config
+import program_logs
 
 
 # from program_logs import logs
@@ -38,7 +40,7 @@ def getUsersFromEnv():
         num = uSplitList[0].strip()
         support = uSplitList[1].strip()
         pwd = getenv.getPwd(num)
-        if pwd is None or len(pwd) == 0:
+        if pwd is None or len(pwd) == 0 or len(num) == 0 or len(support) == 0:
             continue
 
         users.append({
@@ -72,22 +74,38 @@ def getUsersFromFile(filename):
     finally:
         f.close()
 
+    dir_and_filename = config.getDirAndFileName(filename.strip())
+
     with open(filename, 'r', encoding=encode1) as f:
         uList = f.readlines()
+        # print(uList)
         for userOriginString in uList:
             userStringList = userOriginString.split("#")
-            uSplitList = userStringList[0].strip().split("=")
+            vaildStr = userStringList[0].strip()
+            if len(vaildStr) == 0:
+                continue
+            # print(vaildStr)
+            uSplitList = vaildStr.split("=")
             if len(uSplitList) != 2:
                 continue
             pwd = ""
             num = uSplitList[0].strip()
             support = uSplitList[1].strip()
-            if os.path.exists(num + ".pwd"):
+
+            # 适配绝对路径
+            pwd_path = dir_and_filename[0]
+            if len(pwd_path) != 0:
+                pwd_path += "/"
+            pwd_path += num + '.pwd'
+
+            if os.path.exists(pwd_path):
                 encode2 = "utf-8"
                 if isWindows:
                     encode2 = "gbk"
 
-                f = open(num + '.pwd', 'r', encoding=encode2)
+                program_logs.print1("正在检测用户{}的密码文件{}".format(num, pwd_path))
+
+                f = open(pwd_path, 'r', encoding=encode2)
                 try:
                     p = f.read().strip()
                 except UnicodeDecodeError:

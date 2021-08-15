@@ -1,5 +1,5 @@
-FROM python:3.10.0rc1-alpine3.14
-#FROM python:3.9.6-alpine3.14
+#FROM python:3.10.0rc1-alpine3.14
+FROM python:3.9.6-alpine3.13
 MAINTAINER Haomin Kong
 
 LABEL AUTHOR="Haomin Kong" \
@@ -38,35 +38,33 @@ ENV DOCKER="Haomin Kong"
 
 ENV BASE_PATH="/ysuauth"
 
-ENV REPO_URL="https://gitee.com/yskoala/ysuauth.git"
-ENV REPO_BRANCH="develop"
-#ENV REPO_BRANCH=master
+ENV REPO_URL="https://gitee.com/yskoala/ysuauth.git" \
+# REPO_BRANCH="develop"
+    REPO_BRANCH="master"
+# REPO_BRANCH=master
 
 #ENV USE_DEFAULT_GIT="True"
 #这俩有很大的区别啊！坑死我了！
 #ENV USE_DEFAULT_GIT = "True"
 
-ENV DOCKER="You are right!"
-
-ENV LOGS_PATH="/ysuauth/logs"
-ENV SETTINGS_PATH="/ysuauth/settings"
+ENV LOGS_PATH="/ysuauth/logs" \
+    SETTINGS_PATH="/ysuauth/settings"
 
 RUN echo "[global] \
-    index-url = https://mirrors.aliyun.com/pypi/simple \
-    trusted-host = mirrors.aliyun.com \
+    index-url = https://pypi.tuna.tsinghua.edu.cn/simple \
+    trusted-host = pypi.tuna.tsinghua.edu.cn \
     timeout = 120 \
-    " > /etc/pip.conf
-
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+    " > /etc/pip.conf \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
     && apk add --no-cache build-base libffi-dev git tzdata bash curl \
-    # 我觉得吧，还是比较有必要用清华源的。
-    && pip --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
-    && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
+    # 我觉得吧，还是比较有必要用清华源的。 \
+    && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
+    && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    && pip3 --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
     && rm -rf ~/.cache/pip \
     && rm -rf /tmp/* \
-#    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && apk del libffi-dev build-base \
+#    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo Haomin Kong >> docker_status \
     && echo "Asia/Shanghai" > /etc/timezone
@@ -83,19 +81,19 @@ COPY src/*.list /ysuauth/src/
 COPY entrypoint.sh /ysuauth/entrypoint.sh
 RUN chmod +x /ysuauth/entrypoint.sh
 
-RUN rm -rf /ysuauth/src/logs; exit 0
-RUN rm -rf /ysuauth/src/settings; exit 0
-RUN rm -rf /ysuauth/src/remote; exit 0
-RUN rm -f /ysuauth/src/*.ysuauth; exit 0
+RUN rm -rf /ysuauth/src/logs; exit 0 \
+    && rm -rf /ysuauth/src/settings; exit 0 \
+    && rm -rf /ysuauth/src/remote; exit 0 \
+    && rm -f /ysuauth/src/*.ysuauth; exit 0
 
-RUN mkdir $LOGS_PATH; exit 0
-RUN mkdir $SETTINGS_PATH; exit 0
-RUN chmod -R 777 $LOGS_PATH
-
-RUN rm -f /ysuauth/src/*.log
+RUN mkdir $LOGS_PATH; exit 0 \
+    && mkdir $SETTINGS_PATH; exit 0 \
+    && chmod -R 777 $LOGS_PATH
 
 # RUN #python3 ntp_hosts.py
 
-#ENV USE_DEFAULT_GIT="True"
+ENV USE_DEFAULT_GIT="True"
+#ENV DEBUG="True"
+#ENV IGNORE_WORK_TIME="True"
 
 ENTRYPOINT ["/ysuauth/entrypoint.sh"]

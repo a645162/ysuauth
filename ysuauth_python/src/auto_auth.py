@@ -3,7 +3,6 @@
 import time
 import program_logs
 import config
-import os
 
 
 def execfile(filepath, globals=None, locals=None):
@@ -18,8 +17,6 @@ def execfile(filepath, globals=None, locals=None):
 
 
 if __name__ == '__main__':
-    # pass
-    # runfile()
     restartFilename = "restart.ysuauth"
     while True:
         execfile("main_auto_auth.py")

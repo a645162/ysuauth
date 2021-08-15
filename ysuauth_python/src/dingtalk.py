@@ -70,9 +70,12 @@ class DingTalk:
             return True
 
     def getFromFiles(self, path=""):
+        program_logs.print1("即将判断{}是否存在".format(path + 'wh_access_token.dingtalk'))
+        program_logs.print1("即将判断{}是否存在".format(path + 'wh_secret.dingtalk'))
         if not os.path.exists(path + 'wh_access_token.dingtalk') or \
                 not os.path.exists(path + 'wh_secret.dingtalk'):
-            program_logs.print1("钉钉配置文件不存在")
+            program_logs.print1("【找不到钉钉配置文件】钉钉配置文件不存在！")
+            program_logs.print1("【找不到钉钉配置文件】两个钉钉配置文件必须同时存在才可以生效！")
             return
 
         with open(path + 'wh_access_token.dingtalk', 'r') as f:
@@ -93,10 +96,10 @@ class DingTalk:
         # print(self.access_token, self.secret)
         # print(self.url)
 
-    nowtime = datetime.datetime.now()
+    now_time = datetime.datetime.now()
     program = {
         "msgtype": "link",
-        "link": {"text": "[{}] 联网成功！".format(datetime.datetime.strftime(nowtime, '%Y年%m月%d日 %H:%M:%S')),
+        "link": {"text": "[{}] 联网成功！".format(datetime.datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')),
                  "title": "联网成功",
                  "picUrl": "https://ysu.edu.cn/images/favicon.png",
                  "messageUrl": "http://auth.ysu.edu.cn"

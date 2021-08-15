@@ -2,10 +2,8 @@ import re
 import json
 import req
 
-import program_logs
-import getenv
 
-class YSUNetAuth():
+class YSUNetAuth:
     def __init__(self):
         """
         登陆服务
@@ -43,7 +41,8 @@ class YSUNetAuth():
                 self.isLogin = True
             else:
                 self.isLogin = False
-        except:
+        except Exception as e:
+
             self.isLogin = False
         return self.isLogin
 

@@ -15,38 +15,35 @@ if len(log_path) != 0:
     log_path += "/"
 
 debug = getenv.is_debug_mode()
-black_list = ["userId"]
+# black_list = ["userId", "的密码文件", "SEC", "oapi.dingtalk.com", "\"password\""]
+black_list = []
 
 logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
                     filename='{}.log'.format(
                         log_path + datetime.datetime.strftime(apptime.getNow(), 'ysuauth_%Y%m%d_%H%M%S')),
-                    filemode='a',  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
+                    filemode='a',  # 模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
                     # a是追加模式，默认如果不写的话，就是追加模式
-                    format=
-                    '%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
+                    format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
                     # 日志格式
                     )
 
 
 def print1(text="", error=False, timestamp=0):
     if type(text) == list:
-        l = text
+        text_list = text
         text = ""
-        for i in l:
+        for i in text_list:
             text += str(i) + "\n"
         text = text.strip()
 
     if not debug:
         for i in black_list:
-            key = i.strip()
-            if len(key) == 0:
+            keyword = i.strip()
+            if len(keyword) == 0:
                 continue
-            if text.find(key) != 0:
-                print("包含{}，拒绝显示！".format(key))
+            if text.find(keyword) != -1:
+                print("包含字符串“{}”，非debug模式拒绝显示！".format(keyword))
                 return
-        # if text.find("userId") != 0:
-        #     print("包含userId,拒绝显示")
-        #     return
 
     if timestamp == 0:
         timestamp = datetime.datetime.now()
