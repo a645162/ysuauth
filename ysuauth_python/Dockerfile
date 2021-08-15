@@ -1,5 +1,5 @@
 #FROM python:3.10.0rc1-alpine3.14
-FROM python:3.9.6-alpine3.14
+FROM python:3.9.6-alpine3.13
 MAINTAINER Haomin Kong
 
 LABEL AUTHOR="Haomin Kong" \
@@ -59,11 +59,11 @@ RUN echo "[global] \
     " > /etc/pip.conf
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
-    && apk add --no-cache build-base libffi-dev git tzdata bash curl \
+    && apk add --no-cache build-base libffi-dev git tzdata bash curl libseccomp2 \
     # 我觉得吧，还是比较有必要用清华源的。
-    && pip --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
-    && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
+    && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
+    && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    && pip3 --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
     && rm -rf ~/.cache/pip \
     && rm -rf /tmp/* \
 #    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
