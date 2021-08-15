@@ -50,6 +50,7 @@ class ntp_host():
             program_logs.print1(repr(e), True)
         if t is None or t == 0:
             program_logs.print1("测试{}完毕！无法连通！".format(self.host_url))
+            return False
         else:
             print(t)
             program_logs.print1("测试{}完毕！当前时间为{}!格式化时间为 {}"
@@ -57,7 +58,7 @@ class ntp_host():
                 self.host_url,
                 str(t),
                 datetime.datetime.fromtimestamp(t) \
-                    .strftime("%Y年%m月%d日 %H:%M:%S")
+                .strftime("%Y年%m月%d日 %H:%M:%S")
             )
             )
         return t != 0

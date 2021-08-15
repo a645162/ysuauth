@@ -40,7 +40,7 @@ def getUsersFromEnv():
         num = uSplitList[0].strip()
         support = uSplitList[1].strip()
         pwd = getenv.getPwd(num)
-        if pwd is None or len(pwd) == 0:
+        if pwd is None or len(pwd) == 0 or len(num) == 0 or len(support) == 0:
             continue
 
         users.append({
