@@ -15,7 +15,8 @@ if len(log_path) != 0:
     log_path += "/"
 
 debug = getenv.is_debug_mode()
-black_list = ["userId", "的密码文件","SEC","oapi.dingtalk.com"]
+# black_list = ["userId", "的密码文件", "SEC", "oapi.dingtalk.com", "\"password\""]
+black_list = []
 
 logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
                     filename='{}.log'.format(

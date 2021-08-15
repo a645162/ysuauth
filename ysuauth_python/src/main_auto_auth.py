@@ -204,12 +204,18 @@ def login_user(all_user):
                 continue
 
             if x in range(4):
-                supports.append(x)
+                supports.append(str(x))
+        s_str = ""
+        for i in supports:
+            s_str += str(i) + " "
+
+        program_logs.print1("用户{}支持的服务有{}".format(user["num"], s_str))
 
         for support in supports:
+            program_logs.print1("正在尝试连接用户{}的服务{}".format(user["num"], support))
             re = ysuAuth.login(user["num"], user["password"], support)
             if re[0]:
-                program_logs.print1("连接" + str(re))
+                program_logs.print1("连接{}".format(user["num"]) + str(re))
                 break
             else:
                 program_logs.print1(parse_user.netTypeToString(support) + "失败(" + re[1] + ")",
