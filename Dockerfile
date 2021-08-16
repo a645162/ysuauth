@@ -39,9 +39,9 @@ ENV DOCKER="Haomin Kong"
 ENV BASE_PATH="/ysuauth"
 
 ENV REPO_URL="https://gitee.com/yskoala/ysuauth.git" \
-# REPO_BRANCH="develop"
-    REPO_BRANCH="master"
-# REPO_BRANCH=master
+#    REPO_BRANCH="develop"
+    REPO_BRANCH="beta"
+#    REPO_BRANCH="master"
 
 #ENV USE_DEFAULT_GIT="True"
 #这俩有很大的区别啊！坑死我了！
