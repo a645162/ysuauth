@@ -1,20 +1,20 @@
 #!/bin/bash
 
-set -e
+#set -e
 
 bit=$(getconf LONG_BIT)
 
 echo "bit=$bit"
 
 if [ ! -a ~/bit.txt ]; then
-    echo "bit=$bit" >~/bit.txt
+  echo "bit=$bit" >~/bit.txt
 fi
 
 if [ "$bit" = "64" ]; then
-    arch="arm64"
+  arch="arm64"
 else
-    arch="armhf"
-    echo "32位树莓派系统需要更新补丁！"
+  arch="armhf"
+  echo "32位树莓派系统需要更新补丁！"
 fi
 
 echo "USE_DEFAULT_GIT = $USE_DEFAULT_GIT"
@@ -53,7 +53,7 @@ network() {
   local ret_code
   ret_code="$(curl -I -s --connect-timeout "${timeout}" "${target}" -w "%{http_code}" | tail -n1)"
   #  echo "$ret_code" >>"$mode_file"
-  echo "$ret_code"
+  echo "$target return $ret_code"
 
   #curl -I -s --connect-timeout 1 www.gitee.com -w %{http_code} | tail -n1
 
@@ -88,7 +88,12 @@ else
     if network; then
       echo "联网状态->已经连接到互联网！"
       echo "Update脚本->前台阻塞执行Update！"
-      python3 "update.py"
+
+      if python3 "update.py" -i; then
+        mode="git"
+      else
+        mode="local"
+      fi
       [ -f "$BASE_PATH/remote/ready.ysuauth" ] && isUpdate=true || isUpdate=false
       if [ "$isUpdate" = true ]; then
         echo "Update脚本->更新完毕！"

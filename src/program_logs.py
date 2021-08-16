@@ -24,8 +24,18 @@ logging.basicConfig(level=logging.DEBUG,  # 控制台打印的日志级别
                     # 日志格式
                     )
 
+tag_statistics = {}
 
-def print1(text="", error=False, timestamp=0):
+
+def print1(text="", error=False, timestamp=0, tag=-1):
+    if tag != -1:
+        if tag not in tag_statistics.keys():
+            tag_statistics[str(tag)] = 0
+        tag_statistics[str(tag)] += 1
+
+        if tag_statistics[str(tag)] > 10:
+            return
+
     if type(text) == list:
         text_list = text
         text = ""
