@@ -1,7 +1,8 @@
-import ping_simple
-import ntp
-import program_logs
 import datetime
+
+import ntp
+import ping_simple
+import program_logs
 
 
 def ping_all(hosts_list):

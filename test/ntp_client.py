@@ -2,8 +2,10 @@
 # -*- coding:UTF-8 -*-
 # 欢迎关注微信公众号：点滴技术
 # 这里有靠谱、有价值、免费分享
+import datetime
+import os
+
 import ntplib
-import os, datetime
 
 hosts1 = [
     'ntp.tuna.tsinghua.edu.cn',

@@ -1,11 +1,10 @@
-import threading
-
-from dingtalk import DingTalk
 import datetime
-
+import threading
 import time
-import program_logs
+
 import ntp
+import program_logs
+from dingtalk import DingTalk
 
 dt = DingTalk()
 

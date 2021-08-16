@@ -1,19 +1,18 @@
-import config
-import apptime
+import getopt
 import os
+import shutil
+import sys
+import time
+
+import git
 # import GitPython
 # from git import Repo
 from git.repo import Repo
-import git
-import shutil
-import datetime
+
+import apptime
+import config
 import getenv
 import ping_simple
-import time
-
-import getopt
-import sys
-
 import program_logs
 
 

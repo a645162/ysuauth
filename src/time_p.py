@@ -1,6 +1,7 @@
-import ntp
 import datetime
 import time
+
+import ntp
 
 
 class time_p():
