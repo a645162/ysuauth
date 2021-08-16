@@ -50,7 +50,7 @@ ysuauth_python/wh_secret.dingtalk
 ysuauth_python/*.dingtalk
 ysuauth_python/*webhook*
 ysuauth_python/src/remote
-docker-compose.yml
+docker-compose-test.yml
 docker1.sh
 *.logs
 *restart.ysuauth
@@ -59,6 +59,7 @@ docker1.sh
 *(*-*-*_*-*-*)*
 *(*-*-* *-*-*)*
 *.ysuauth
+docker-compose.yml
 
 logs/
 

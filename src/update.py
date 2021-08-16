@@ -27,6 +27,7 @@ def commits_diff(repo, branch):
 if __name__ == "__main__":
     argv = sys.argv[1:]
     needWait = False
+    supportIgnore = False
     try:
         options, args = getopt.getopt(argv, "w", ["wait"])
     except getopt.GetoptError:
@@ -36,18 +37,25 @@ if __name__ == "__main__":
         if option in ("-w", "--wait"):
             program_logs.print1("support wait connection!")
             needWait = True
-            break
+        elif option in ("-i", "--ignoe"):
+            program_logs.print1("support ignore connection!")
+            supportIgnore = True
 
-    ping_value = 0
+    if not supportIgnore:
+        ping_value = 0
 
-    while True:
-        ping_value = ping_simple.ping_host("gitee.com")
-        if not (needWait and ping_value == 0):
-            break
-        time.sleep(1)
+        if needWait:
+            program_logs.print1("开始阻塞检测。")
+        while True:
+            ping_value = ping_simple.ping_host("gitee.com", 1)
+            if not (needWait and ping_value == 0):
+                break
+            time.sleep(1)
 
-    if ping_value == 0:
-        exit(1)
+        if ping_value == 0:
+            exit(1)
+
+        program_logs.print1("已经跳过了阻塞检测模块。")
 
     program_logs.print1("已经联网！")
     program_logs.print1("即将开始Update")
