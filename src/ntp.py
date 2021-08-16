@@ -2,11 +2,11 @@
 # -*- coding:UTF-8 -*-
 # 欢迎关注微信公众号：点滴技术
 # 这里有靠谱、有价值、免费分享
-import ntplib
-import os
 import datetime
-import time
-import ntp_hosts
+import os
+
+import ntplib
+
 import program_logs
 
 

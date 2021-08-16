@@ -1,6 +1,3 @@
-import ping_simple
-
-
 class testget_lt():
     a = 1
 

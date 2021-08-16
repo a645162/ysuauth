@@ -1,27 +1,22 @@
 # -*- coding: utf-8 -*-
-import random
-import os
-import sys
-import time
-import threading
 import datetime
+import os
+import random
+import sys
+import threading
+import time
 
-import apptime
 # from YSUNetAuthTools import YSUNetAuth
 import YSUNetAuthTools
-import parse_user
-
-from dingtalk import DingTalk
-
-import program_logs
-
-import parseDingTalkJson
+import apptime
 import config
-
+import getenv
 import ntp
 import ntp_hosts
-
-import getenv
+import parseDingTalkJson
+import parse_user
+import program_logs
+from dingtalk import DingTalk
 
 restartFilename = "restart.ysuauth"
 if config.isFileExist(restartFilename):

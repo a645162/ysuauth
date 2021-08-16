@@ -1,18 +1,16 @@
+import base64
+import datetime
+import hashlib
+import hmac
+import json
 import logging
 import os
 import time
-import hmac
-import hashlib
-import base64
 import urllib.parse
 
-import datetime
-
 import requests
-import json
 
 import getenv
-
 # https://developers.dingtalk.com/document/app/custom-robot-access
 import program_logs
 

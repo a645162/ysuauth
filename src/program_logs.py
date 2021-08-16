@@ -1,14 +1,11 @@
 import datetime
 import logging
-
-import apptime
-import ntp
-
 import threading
 
-import ntp_hosts
-
+import apptime
 import getenv
+import ntp
+import ntp_hosts
 
 log_path = getenv.getLogsPath()
 if len(log_path) != 0:

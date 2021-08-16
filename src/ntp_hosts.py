@@ -1,12 +1,9 @@
+import os
+import threading
 import time
 
-import program_logs
-
-import os
 import ntp_host
-import ntp
-
-import threading
+import program_logs
 
 
 class ntp_hosts():

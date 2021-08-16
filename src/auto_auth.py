@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import time
-import program_logs
+
 import config
+import program_logs
 
 
 def execfile(filepath, globals=None, locals=None):

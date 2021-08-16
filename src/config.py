@@ -1,6 +1,8 @@
 import os
 import time
+
 import program_logs
+
 
 def getDirAndFileName(path):
     paths = path.split("/")

@@ -1,7 +1,6 @@
+import parse
 from YSUNetAuthTools import YSUNetAuth
 from program_logs import log
-import sys
-import parse
 
 ysuAuth = YSUNetAuth()
 

@@ -1,5 +1,5 @@
-import urllib.request
 import urllib.parse
+import urllib.request
 
 import program_logs
 

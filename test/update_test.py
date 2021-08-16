@@ -1,11 +1,4 @@
-import config
-import apptime
-import os
-from git import Repo
-from git.repo import Repo
 import git
-import shutil
-import datetime
 
 import program_logs
 

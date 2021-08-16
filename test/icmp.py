@@ -1,8 +1,8 @@
 # encoding:utf-8
-import time
-import struct
-import socket
 import select
+import socket
+import struct
+import time
 
 
 # 检验和
