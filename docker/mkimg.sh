@@ -13,7 +13,9 @@ docker buildx build --push \
   -t a645162/ysuauth:${version} .
 
 #docker tag ysuauth:${version} a645162/ysuauth:${version}
-docker tag a64516/ysuauth:${version} a645162/ysuauth:latest
+
+docker tag a645162/ysuauth:${version} a645162/ysuauth:latest
+#docker tag a645162/ysuauth:3.0.3 a645162/ysuauth:latest
 docker push ysuauth/ysuauth:latest
 
 #docker build -t ysuauth-dev:3.0.2 .
