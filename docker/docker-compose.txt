@@ -1,6 +1,6 @@
 version: "3"
 services:
-  ysuauth: #第1个
+  ysuauth_1: #第1个
     image: a645162/ysuauth:latest
 #    image: a645162/ysuauth:3.0.2
     restart: always
