@@ -14,7 +14,7 @@ if [ "$bit" = "64" ]; then
   arch="arm64"
 else
   arch="armhf"
-  echo "32位树莓派系统需要更新补丁！"
+  echo "温馨提醒：32位树莓派系统需要更新补丁！"
 fi
 
 echo "USE_DEFAULT_GIT = $USE_DEFAULT_GIT"
