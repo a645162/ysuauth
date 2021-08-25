@@ -34,11 +34,9 @@ WORKDIR /ysuauth
 # mkdir -p ：递归创建目录，即使上级目录不存在，会按目录层级自动创建目录
 # git clone -b : 克隆指定的分支 git clone -b 分支名 仓库地址
 
-ENV DOCKER="Haomin Kong"
-
-ENV BASE_PATH="/ysuauth"
-
-ENV REPO_URL="https://gitee.com/yskoala/ysuauth.git" \
+ENV DOCKER="Haomin Kong" \
+    BASE_PATH="/ysuauth" \
+    REPO_URL="https://gitee.com/yskoala/ysuauth.git" \
 #    REPO_BRANCH="develop"
     REPO_BRANCH="beta"
 #    REPO_BRANCH="master"
@@ -56,7 +54,8 @@ RUN echo "[global] \
     timeout = 120 \
     " > /etc/pip.conf \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
-    && apk add --no-cache build-base libffi-dev git tzdata bash curl \
+    && apk add --no-cache build-base libffi-dev tzdata bash \
+    && apk add --no-cache git curl \
     # 我觉得吧，还是比较有必要用清华源的。 \
     && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
     && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
@@ -77,25 +76,29 @@ COPY src/*.bash /ysuauth/
 
 COPY src/*.py /ysuauth/src/
 COPY src/*.sh /ysuauth/src/
-COPY src/*.bash /ysuauth/src/
+COPY src/*.bash /ysuauth/
 COPY src/*.list /ysuauth/src/
 
-COPY entrypoint.sh /ysuauth/entrypoint.sh
-RUN chmod +x /ysuauth/entrypoint.sh
+COPY *.sh /ysuauth/
+COPY *.bash /ysuauth/
+
+RUN find /ysuauth/ -name '*.sh' -type f -print -exec chmod +x {} \;
+RUN find /ysuauth/ -name '*.bash' -type f -print -exec chmod +x {} \;
 
 RUN rm -rf /ysuauth/src/logs; exit 0 \
     && rm -rf /ysuauth/src/settings; exit 0 \
     && rm -rf /ysuauth/src/remote; exit 0 \
     && rm -f /ysuauth/src/*.ysuauth; exit 0
 
-RUN mkdir $LOGS_PATH; exit 0 \
+RUN    mkdir $LOGS_PATH; exit 0 \
     && mkdir $SETTINGS_PATH; exit 0 \
     && chmod -R 777 $LOGS_PATH
 
 # RUN #python3 ntp_hosts.py
 
-ENV USE_DEFAULT_GIT="True"
+ENV GIT_ENV="GIT" \
+    USE_DEFAULT_GIT="True"
 #ENV DEBUG="True"
 #ENV IGNORE_WORK_TIME="True"
 
-ENTRYPOINT ["/ysuauth/entrypoint_git.sh"]
+ENTRYPOINT ["/ysuauth/entrypoint.sh"]
