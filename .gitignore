@@ -62,7 +62,7 @@ docker1.sh
 docker-compose.yml
 
 logs/
-
+build_logs/
 
 docker.sh
 users.ini

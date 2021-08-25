@@ -2,6 +2,13 @@
 
 set -e
 
+echo "Start build"
+
+time1=$(date "+%Y-%m-%d_%H-%M-%S")
+echo "Start Time: $time1"
+
+docker login --username=a645162@qq.com registry.cn-zhangjiakou.aliyuncs.com
+
 docker buildx install
 
 # !!!!alpine支持的所有platform我都支持一下吧(3.9.6-alpine3.13有linux/s390x而3.14就没了，就不支持了)
@@ -29,19 +36,27 @@ if [ "$branch" = "dev" ]; then
     --build-arg USE_DEFAULT_GIT="True" \
     --progress=plain --no-cache \
     --platform linux/amd64,linux/arm64,linux/386,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x \
-    -t a645162/ysuauth:${branch_str}v${version} -t a645162/ysuauth:${branch_str}latest .
-#    -t a645162/ysuauth${branch_str_front}:v${version} -t a645162/ysuauth${branch_str_front}:latest \
+    -t a645162/ysuauth${branch_str_front}:${version} \
+    -t a645162/ysuauth${branch_str_front}:latest \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth${branch_str_front}:${version} \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth${branch_str_front}:latest \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth:${branch_str}latest \
+    -t a645162/ysuauth:${branch_str}latest .
+#    -t a645162/ysuauth:${branch_str}v${version} \
 else
   docker buildx build -f "Dockerfile_git" --push \
     --build-arg GIT_ENV="GIT" \
     --build-arg USE_DEFAULT_GIT="True" \
     --progress=plain --no-cache \
     --platform linux/amd64,linux/arm64,linux/386,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x \
-    -t a645162/ysuauth${branch_str_front}:v${version} -t a645162/ysuauth${branch_str_front}:latest \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth:${branch_str}${version} \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth:${branch_str}latest \
+    -t a645162/ysuauth:${branch_str}${version} \
     -t a645162/ysuauth:${branch_str}latest .
-#    -t a645162/ysuauth:${branch_str}v${version} \
+#    -t a645162/ysuauth${branch_str_front}:v${version} -t a645162/ysuauth${branch_str_front}:latest \
 fi
 
+echo ""
 echo "即将开始build local version v$version"
 
 if [ ! -f "Dockerfile_local" ]; then
@@ -55,7 +70,11 @@ if [ "$branch" = "dev" ]; then
     --build-arg USE_DEFAULT_GIT="False" \
     --progress=plain --no-cache \
     --platform linux/amd64,linux/arm64,linux/386,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x \
-    -t a645162/ysuauth${branch_str_front}:local-v${version} -t a645162/ysuauth${branch_str_front}:local-latest \
+    -t a645162/ysuauth${branch_str_front}:local-${version} \
+    -t a645162/ysuauth${branch_str_front}:local-latest \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth${branch_str_front}:local-${version} \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth${branch_str_front}:local-latest \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth:${branch_str}local-latest \
     -t a645162/ysuauth:${branch_str}local-latest .
 #    -t a645162/ysuauth:${branch_str}local-v${version} \
 else
@@ -64,9 +83,18 @@ else
     --build-arg USE_DEFAULT_GIT="False" \
     --progress=plain --no-cache \
     --platform linux/amd64,linux/arm64,linux/386,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x \
-    -t a645162/ysuauth:${branch_str}local-v${version} -t a645162/ysuauth:${branch_str}local-latest .
+    -t a645162/ysuauth:${branch_str}local-${version} \
+    -t a645162/ysuauth:${branch_str}local-latest \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth:${branch_str}local-${version} \
+    -t registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth:${branch_str}local-latest .
 #  -t a645162/ysuauth${branch_str_front}:local-v${version} -t a645162/ysuauth${branch_str_front}:local-latest \
 fi
+
+echo "Finished!"
+
+time2=$(date "+%Y-%m-%d_%H-%M-%S")
+echo "Start Time:  $time1"
+echo "Finish Time: $time2"
 
 #docker tag ysuauth:${version} a645162/ysuauth:${version}
 
