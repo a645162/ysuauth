@@ -29,13 +29,18 @@ class YSUNetAuth:
         self.isLogin = None
         self.allData = None
 
-    def tst_net(self):
+    def tst_net(self, timeout=20):
         """
         测试网络是否认证
         :return: 是否已经认证
         """
         try:
-            res = req.get('http://auth.ysu.edu.cn', headers=self.header)
+            res = \
+                req.get(
+                    'http://auth.ysu.edu.cn',
+                    headers=self.header,
+                    timeout=timeout
+                )
             # res = req.get('http://123.123.123.123', headers=self.header)
             # print(res.geturl())
             if res.geturl().find('success.jsp') > 0:
@@ -47,7 +52,7 @@ class YSUNetAuth:
             self.isLogin = False
         return self.isLogin
 
-    def login(self, user, pwd, type, code=''):
+    def login(self, user, pwd, type):
         """
         输入参数登入校园网，自动检测当前网络是否认证。
         :param user:登入id
@@ -58,23 +63,17 @@ class YSUNetAuth:
         """
         if self.isLogin is None:
             self.tst_net()
-        elif self.isLogin == False:
+        elif not self.isLogin:
             if user == '' or pwd == '':
-                return (False, '用户名或密码为空')
-            self.data = {
-                'userId': user,
-                'password': pwd,
-                'service': self.services[type],
-                'operatorPwd': '',
-                'operatorUserId': '',
-                'validcode': code,
-                'passwordEncrypt': 'False'
-            }
+                return False, '用户名或密码为空'
+
             try:
                 res = req.get('http://auth.ysu.edu.cn', headers=self.header)
                 r = res.read().decode('utf-8')
                 queryString = re.findall(r"href='.*?\?(.*?)'", r, re.S)
-                self.data['queryString'] = queryString[0]
+                self.data = {'userId': user, 'password': pwd, 'service': self.services[type], 'operatorPwd': '',
+                             'operatorUserId': '', 'validcode': "", 'passwordEncrypt': 'False',
+                             'queryString': queryString[0]}
 
                 res = req.post(self.url + 'login', headers=self.header, data=self.data)
 

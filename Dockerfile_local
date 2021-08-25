@@ -55,7 +55,7 @@ RUN echo "[global] \
     " > /etc/pip.conf \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
     && apk add --no-cache build-base libffi-dev tzdata bash \
-    && apk add --no-cache git curl \
+#    && apk add --no-cache git curl \
     # 我觉得吧，还是比较有必要用清华源的。 \
     && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
     && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \

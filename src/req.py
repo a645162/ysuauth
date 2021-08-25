@@ -5,7 +5,7 @@ import program_logs
 
 
 # 封装post请求
-def post(url, headers=None, data=None):
+def post(url, headers=None, data=None, timeout=20):
     program_logs.print1(str(data))
     if data is None:
         data = {}
@@ -17,7 +17,7 @@ def post(url, headers=None, data=None):
     try:
         data = bytes(urllib.parse.urlencode(data), encoding='utf-8')
         request = urllib.request.Request(url, headers=headers, data=data)
-        response = urllib.request.urlopen(request, timeout=20)
+        response = urllib.request.urlopen(request, timeout=timeout)
     except Exception as e:
         program_logs.print1(repr(e))
         raise e
@@ -26,13 +26,13 @@ def post(url, headers=None, data=None):
 
 
 # 封装get请求
-def get(url, headers=None):
+def get(url, headers=None, timeout=20):
     if headers is None:
         headers = {}
     response = None
     try:
         request = urllib.request.Request(url, headers=headers)
-        response = urllib.request.urlopen(request, timeout=10)
+        response = urllib.request.urlopen(request, timeout=timeout)
 
     except Exception as e:
         program_logs.print1(repr(e))
