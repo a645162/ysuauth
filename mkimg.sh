@@ -7,7 +7,7 @@ docker buildx install
 # !!!!alpine支持的所有platform我都支持一下吧(3.9.6-alpine3.13有linux/s390x而3.14就没了，就不支持了)
 # 我觉得，顺带带上linux/s390x得了。
 
-version="3.1.0"
+version="3.1.1"
 branch=""
 #branch="master"
 branch="dev"
@@ -24,7 +24,7 @@ if [ ! -f "Dockerfile_git" ]; then
   cp Dockerfile Dockerfile_git
 fi
 if [ "$branch" = "dev" ]; then
-  docker buildx build -f Dockerfile_git --push \
+  docker buildx build -f "Dockerfile_git" --push \
     --build-arg GIT_ENV="GIT" \
     --build-arg USE_DEFAULT_GIT="True" \
     --progress=plain --no-cache \
@@ -32,7 +32,7 @@ if [ "$branch" = "dev" ]; then
     -t a645162/ysuauth:${branch_str}v${version} -t a645162/ysuauth:${branch_str}latest .
 #    -t a645162/ysuauth${branch_str_front}:v${version} -t a645162/ysuauth${branch_str_front}:latest \
 else
-  docker buildx build -f Dockerfile_git --push \
+  docker buildx build -f "Dockerfile_git" --push \
     --build-arg GIT_ENV="GIT" \
     --build-arg USE_DEFAULT_GIT="True" \
     --progress=plain --no-cache \
@@ -50,7 +50,7 @@ if [ ! -f "Dockerfile_local" ]; then
 fi
 
 if [ "$branch" = "dev" ]; then
-  docker buildx build -f Dockerfile --push \
+  docker buildx build -f "Dockerfile_local" --push \
     --build-arg GIT_ENV="LOCAL" \
     --build-arg USE_DEFAULT_GIT="False" \
     --progress=plain --no-cache \
@@ -59,7 +59,7 @@ if [ "$branch" = "dev" ]; then
     -t a645162/ysuauth:${branch_str}local-latest .
 #    -t a645162/ysuauth:${branch_str}local-v${version} \
 else
-  docker buildx build -f Dockerfile --push \
+  docker buildx build -f "Dockerfile_local" --push \
     --build-arg GIT_ENV="LOCAL" \
     --build-arg USE_DEFAULT_GIT="False" \
     --progress=plain --no-cache \
