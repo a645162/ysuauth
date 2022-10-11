@@ -15,8 +15,13 @@
 
 为了环境比较容易配置，以及容易设置开机自动启动，我决定，今后的所有发版，均发布Docker容器，当然，您可以可以自己编译docker容器。
 
-### DOCKER-COMPOSE
-NIGHT_PAUSE
+### Docker Hub镜像
+https://hub.docker.com/r/a645162/ysuauth
+
+### ※DOCKER-COMPOSE(推荐)
+
+除非不可以用docker-compose，否则请使用docker-compose！！！！
+
 ```YAML
 version: "3"
 services:
@@ -56,6 +61,10 @@ services:
 
 # 请将本文件的后戳名改为yml
 ```
+
+### 手动构建
+可以在macOS或Linux下执行mkimg.sh，调用buildx构建
+或者直接docker build -f "Dockerfile_local" .
 
 ### Python版
 
