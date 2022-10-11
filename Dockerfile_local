@@ -1,9 +1,9 @@
 #FROM python:3.10.0rc1-alpine3.14
-FROM python:3.9.6-alpine3.13
+FROM python:3.10.7-alpine3.16
 MAINTAINER Haomin Kong
 
 LABEL AUTHOR="Haomin Kong" \
-      VERSION=3
+      VERSION=4.0.0
 
 WORKDIR /ysuauth
 
@@ -53,20 +53,22 @@ RUN echo "[global] \
     trusted-host = pypi.tuna.tsinghua.edu.cn \
     timeout = 120 \
     " > /etc/pip.conf \
-    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+    # 清华源有问题，暂时使用中科大的。 \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+#    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
     && apk add --no-cache build-base libffi-dev tzdata bash \
 #    && apk add --no-cache git curl \
-    # 我觉得吧，还是比较有必要用清华源的。 \
     && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
     && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
     && pip3 --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
     && rm -rf ~/.cache/pip \
     && rm -rf /tmp/* \
     && apk del libffi-dev build-base \
-#    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+#    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo Haomin Kong >> docker_status \
     && echo "Asia/Shanghai" > /etc/timezone
+
 
 # 主要目的还是拷贝update.py
 # 主要是这里面的耦合太复杂了，都拷贝了吧！

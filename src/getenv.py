@@ -36,7 +36,13 @@ def is_ignore_work_time():
     return d.strip() == "True"
 
 
-def get_user(key="YSU_AUTH_USER"):
+def get_night_pause():
+    env_np = str(os.environ.get("NIGHT_PAUSE")).strip()
+    return env_np == "1"
+
+
+def get_user():
+    key = "YSU_AUTH_USER"
     return os.environ.get(key)
 
 

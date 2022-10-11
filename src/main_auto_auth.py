@@ -47,6 +47,8 @@ else:
 
 delayTime = 10
 
+is_night_work = getenv.get_night_pause()
+
 my_ntp_hosts_class = ntp_hosts.ntp_hosts()
 my_ntp_hosts_class.initFile()
 my_ntp_hosts = my_ntp_hosts_class.getHosts()
@@ -101,12 +103,12 @@ class dingTalkThread(threading.Thread):
             }
         program_logs.print1(
             "\t\t\t延时{}秒后发送{}{}的消息！"
-                .format(str(delayTime), self.time, typeStr)
+            .format(str(delayTime), self.time, typeStr)
         )
         time.sleep(delayTime)
         program_logs.print1(
             "\t\t\t延时完毕开始发送{}{}的消息！"
-                .format(self.time, typeStr)
+            .format(self.time, typeStr)
         )
         ok = False
         while not ok:
@@ -227,18 +229,20 @@ betweenConnectedTime = ""
 if __name__ == "__main__":
     while True:
 
-        now = datetime.datetime.now()
-        hour = now.hour
-        dayOfWeek = now.isoweekday()
-        inYsuWeekend_Normal = dayOfWeek == 5 or dayOfWeek == 6
-        inYsuWeekend_Holiday = \
-            (dayOfWeek == 5 and apptime.isInTime((6, 1), (23, 59))) \
-            or dayOfWeek == 6 \
-            or (dayOfWeek == 7 and apptime.isInTime((0, 0), (23, 25)))
-        inYsuWeekend = inYsuWeekend_Holiday
-        inWorkTime_weekday = (not inYsuWeekend) and apptime.isInTime((6, 1), (23, 28))
-        inWorkTime_weekend = inYsuWeekend and apptime.isInTime((6, 1), (23, 59))
-        inWorkTime = inWorkTime_weekday or inWorkTime_weekend or ignore_work_time
+        inWorkTime = is_night_work
+        if not inWorkTime:
+            now = datetime.datetime.now()
+            hour = now.hour
+            dayOfWeek = now.isoweekday()
+            inYsuWeekend_Normal = dayOfWeek == 5 or dayOfWeek == 6
+            inYsuWeekend_Holiday = \
+                (dayOfWeek == 5 and apptime.isInTime((6, 1), (23, 59))) \
+                or dayOfWeek == 6 \
+                or (dayOfWeek == 7 and apptime.isInTime((0, 0), (23, 25)))
+            inYsuWeekend = inYsuWeekend_Holiday
+            inWorkTime_weekday = (not inYsuWeekend) and apptime.isInTime((6, 1), (23, 28))
+            inWorkTime_weekend = inYsuWeekend and apptime.isInTime((6, 1), (23, 59))
+            inWorkTime = inWorkTime_weekday or inWorkTime_weekend or ignore_work_time
 
         if not inWorkTime:
             if last == 1:

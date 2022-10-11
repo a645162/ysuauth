@@ -15,6 +15,48 @@
 
 为了环境比较容易配置，以及容易设置开机自动启动，我决定，今后的所有发版，均发布Docker容器，当然，您可以可以自己编译docker容器。
 
+### DOCKER-COMPOSE
+NIGHT_PAUSE
+```YAML
+version: "3"
+services:
+  ysuauth_1: #第1个
+    image: a645162/ysuauth:4.0.0
+#    image: a645162/ysuauth:latest
+    restart: always
+    container_name: ysuauth
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 512M
+        reservations:
+          cpus: '0.2'
+          memory: 200M
+    network_mode: host
+    tty: true
+    volumes:
+#      - /home/pi/ysuauth/settings:/ysuauth/settings
+      - ./settings/:/ysuauth/settings/
+#      - /home/pi/ysuauth/log:/ysuauth/log
+      - ./logs/:/ysuauth/logs/
+    environment:
+    # 1、每个学生之间使用&隔开
+    # 2、每个学生，请提供其对应密码
+    # 3、请将大括号一并删除
+    # 4、网络类型 0校园网 1中国移动 2中国联通 3中国电信
+      - YSU_AUTH_USER="{201811080333} = {3}&{学号2} = {支持的网络类型}}" \
+      - YSU_AUTH_USER_201811080333="{201811080333的密码}" \
+      - YSU_AUTH_USER_{学号2}="{学号2的密码}" \
+      - wh_access_token="{钉钉的Access Token}" \
+      - wh_secret="{钉钉的Secret}" \
+    # NIGHT_PAUSE用来控制是否夜间暂停工作，只有内容是1的时候才起作用
+    # 本科生暑假不断电，但是断网
+#      - NIGHT_PAUSE="1"
+
+# 请将本文件的后戳名改为yml
+```
+
 ### Python版
 
 由于大部分都是搬运自大佬，我只是修复bug，并且让他可以自动运行在我的树莓派。目前我没有太多要求。考研狗时间不够，我完研一定奥！一定完成！
