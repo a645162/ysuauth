@@ -1,5 +1,4 @@
-#FROM python:3.10.0rc1-alpine3.14
-FROM python:3.9.6-alpine3.13
+FROM python:3.11.4-alpine3.18
 MAINTAINER Haomin Kong
 
 LABEL AUTHOR="Haomin Kong" \
@@ -48,6 +47,7 @@ ENV DOCKER="Haomin Kong" \
 ENV LOGS_PATH="/ysuauth/logs" \
     SETTINGS_PATH="/ysuauth/settings"
 
+# 燕大我觉得速度最快的就是清华源了！
 RUN echo "[global] \
     index-url = https://pypi.tuna.tsinghua.edu.cn/simple \
     trusted-host = pypi.tuna.tsinghua.edu.cn \

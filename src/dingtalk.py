@@ -1,5 +1,4 @@
 import base64
-import datetime
 import hashlib
 import hmac
 import json
@@ -34,7 +33,7 @@ class DingTalk:
         return timestamp, sign
 
     def getAccessToken(self, url):
-        return url[url.find("access_token=") + len("access_token="):]
+        return url[url.find("access_token=") + len("access_token="):].strip()
 
     access_token = ""
     secret = ""
@@ -74,7 +73,7 @@ class DingTalk:
                 not os.path.exists(path + 'wh_secret.dingtalk'):
             program_logs.print1("【找不到钉钉配置文件】钉钉配置文件不存在！")
             program_logs.print1("【找不到钉钉配置文件】两个钉钉配置文件必须同时存在才可以生效！")
-            return
+            return False
 
         with open(path + 'wh_access_token.dingtalk', 'r') as f:
             p = f.read().strip()
@@ -94,18 +93,20 @@ class DingTalk:
         # print(self.access_token, self.secret)
         # print(self.url)
 
-    now_time = datetime.datetime.now()
-    program = {
-        "msgtype": "link",
-        "link": {"text": "[{}] 联网成功！".format(datetime.datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')),
-                 "title": "联网成功",
-                 "picUrl": "https://ysu.edu.cn/images/favicon.png",
-                 "messageUrl": "http://auth.ysu.edu.cn"
-                 },
-        "at": {
-            "isAtAll": True
-        }
-    }
+        return len(self.access_token) > 0 and len(self.secret) > 0
+
+    # now_time = datetime.datetime.now()
+    # program = {
+    #     "msgtype": "link",
+    #     "link": {"text": "[{}] 联网成功！".format(datetime.datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S')),
+    #              "title": "联网成功",
+    #              "picUrl": "https://ysu.edu.cn/images/favicon.png",
+    #              "messageUrl": "http://auth.ysu.edu.cn"
+    #              },
+    #     "at": {
+    #         "isAtAll": True
+    #     }
+    # }
 
     def sendMsg(self, msg):
         headers = {'Content-Type': 'application/json'}

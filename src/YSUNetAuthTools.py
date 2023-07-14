@@ -13,6 +13,7 @@ class YSUNetAuth:
         2：中国联通
         3：中国电信
         """
+        self.data = None
         self.services = {
             '0': '%e6%a0%a1%e5%9b%ad%e7%bd%91',
             '1': '%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8',
@@ -48,8 +49,9 @@ class YSUNetAuth:
             else:
                 self.isLogin = False
         except Exception as e:
-
+            print(e.args)
             self.isLogin = False
+
         return self.isLogin
 
     def login(self, user, pwd, type):
@@ -58,9 +60,11 @@ class YSUNetAuth:
         :param user:登入id
         :param pwd:登入密码
         :param type:认证服务
-        :param code:验证码
         :return:元祖第一项：是否认证状态；第二项：详细信息
         """
+
+        # 注意喽：不用输入任何验证码，哪怕你 auth.ysu.edu.cn 提示你输入验证码了！
+
         if self.isLogin is None:
             self.tst_net()
         elif not self.isLogin:
@@ -102,6 +106,7 @@ class YSUNetAuth:
             print('数据解析失败，请稍后重试。')
         alldata = self.allData
         print(self.allData)
+
         return self.allData
 
     def logout(self):

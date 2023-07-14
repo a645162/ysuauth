@@ -1,3 +1,5 @@
-requests>=2.25.1
-ntplib>=0.4.0
-ping3>=2.9.1
+requests
+ntplib
+ping3
+GitPython
+python-dateutil

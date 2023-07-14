@@ -34,16 +34,18 @@ docker_status = getenv.is_docker()
 settings_path = getenv.getSettingsPath()
 
 dt = DingTalk()
+isNeedSendToDingTalk=False
 
 if dt.getFromENV():
     program_logs.print1("从ENV中获取钉钉配置成功！")
+    isNeedSendToDingTalk=True
 else:
     extraPath = os.getcwd() + "/settings/"
     if docker_status:
         extraPath = settings_path
 
     program_logs.print1("正在从{}读取钉钉配置！".format(extraPath))
-    dt.getFromFiles(extraPath)
+    isNeedSendToDingTalk=dt.getFromFiles(extraPath)
 
 delayTime = 10
 
@@ -293,17 +295,20 @@ if __name__ == "__main__":
 
                 localTime = datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
                 lastConnectedTime = localTime
-                thread = \
-                    dingTalkThread(
-                        localTime
-                        + "\n NTP时间为：" + ntp_time_str,
-                        False,
-                        my_ntp_hosts,
-                        threadPool
-                        # None
-                    )
-                thread.start()
-                threadPool.append(thread)
+
+                # 钉钉发信
+                if isNeedSendToDingTalk:
+                    thread = \
+                        dingTalkThread(
+                            localTime
+                            + "\n NTP时间为：" + ntp_time_str,
+                            False,
+                            my_ntp_hosts,
+                            threadPool
+                            # None
+                        )
+                    thread.start()
+                    threadPool.append(thread)
             last = 2
 
             # 断网时间发送（网络恢复后的发送流程）
@@ -317,13 +322,15 @@ if __name__ == "__main__":
                 program_logs.print1("此次断网时长为：" + diff_str)
                 betweenDisconnectedTime = "本次断网时长为：" + diff_str
 
-                thread = \
-                    dingTalkThread(
-                        " \n##### 断网时间为：" + disConnectedTime
-                        + " \n##### " + betweenDisconnectedTime
-                        + " \n##### " + betweenConnectedTime, True, my_ntp_hosts, threadPool)
-                thread.start()
-                threadPool.append(thread)
+                if isNeedSendToDingTalk:
+                    thread = \
+                        dingTalkThread(
+                            " \n##### 断网时间为：" + disConnectedTime
+                            + " \n##### " + betweenDisconnectedTime
+                            + " \n##### " + betweenConnectedTime, True, my_ntp_hosts, threadPool)
+                    thread.start()
+                    threadPool.append(thread)
+
                 disConnectedTime = ""
 
         if config.isFileExist("restart.ysuauth"):

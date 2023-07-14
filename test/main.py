@@ -1,6 +1,6 @@
-import parse
+import parse_user
 from YSUNetAuthTools import YSUNetAuth
-from program_logs import log
+import program_logs
 
 ysuAuth = YSUNetAuth()
 
@@ -15,11 +15,11 @@ def loginUser(users):
             if re:
                 break
             else:
-                log.log(parse.netTypeToString(support) + "失败")
+                program_logs.print1(parse_user.netTypeToString(support) + "失败")
 
 
 if __name__ == '__main__':
-    log = log()
+
     print(ysuAuth.tst_net())
     ysuAuth.logout()
     ysuAuth.get_allData()
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     # print([x for x in range(-1, 7) if x in range(4)])
 
-    users = parse.getUsersFromFile("users.ini")
+    users = parse_user.getUsersFromFile("users.ini")
 
     loginUser(users)
 

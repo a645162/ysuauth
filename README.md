@@ -60,10 +60,16 @@ docker build -f "Dockerfile_local" .
 
 ### Python版
 
-由于大部分都是搬运自大佬，我只是修复bug，并且让他可以自动运行在我的树莓派。目前我没有太多要求。考研狗时间不够，我完研一定奥！一定完成！
-Docker版还没有搞定~~我会抽时间搞定的！
+其实就是你需要手动配置环境，但是占用资源方面肯定是比 Docker 小多了，
+但是你需要自己配置开机自动启动！
 
-### Kotlin版
+### 部署在树莓派
+
+如果您部署在32位的树莓派，那么可能会出现一个小错误！
+请参考
+[脚本](raspberrypi/fix_raspberrypi_armhf.sh)
+
+## Kotlin版
 
 https://github.com/YsKoala/YsuAuthCore
 
@@ -72,7 +78,7 @@ https://github.com/YsKoala/YsuAuthCore
 
 ## 联系我
 
-你有什么问题要不就联系我QQ吧！备注清楚来意。
+你有什么问题要不就联系我QQ吧！请备注清楚来意！
 
 2018级 理学院 应用物理学 孔昊旻
 
