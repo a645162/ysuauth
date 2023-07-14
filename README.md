@@ -32,7 +32,7 @@ as this is an internal script of a Chinese school!
 - 介绍这个脚本如何使用
 
 视频的大纲请参考
-[视频大纲](video/video.md)
+[视频大纲](video/YSU校园网.md)
 
 ## 版本说明
 
@@ -49,6 +49,9 @@ https://hub.docker.com/r/a645162/ysuauth
 [示例文件](docker/docker-compose.yaml)
 
 ### 手动构建
+
+本项目使用 buildx 进行多架构构建。
+
 可以在macOS或Linux下执行
 mkimg.sh 脚本
 ，调用buildx构建
@@ -57,6 +60,7 @@ mkimg.sh 脚本
 ```bash
 docker build -f "Dockerfile_local" .
 ```
+Windows 下可以参考构建脚本，手动执行语句。
 
 ### Python版
 

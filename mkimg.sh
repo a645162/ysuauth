@@ -7,7 +7,8 @@ echo "Start build"
 time1=$(date "+%Y-%m-%d_%H-%M-%S")
 echo "Start Time: $time1"
 
-docker login --username=a645162@qq.com registry.cn-zhangjiakou.aliyuncs.com
+#docker login --username=a645162@qq.com registry.cn-zhangjiakou.aliyuncs.com
+#docker login
 
 docker buildx install
 
@@ -105,4 +106,4 @@ echo "Finish Time: $time2"
 
 #docker build -t ysuauth-dev:3.0.3 -t ysuauth:3.0.3 .
 
-#docker buildx build -t yangchuansheng/hello-arch --platform=linux/arm,linux/arm64,linux/amd64 . --push
+#docker build -t a645162/ysuauth-dev:local-latest -f "Dockerfile_local" --push .

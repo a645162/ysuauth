@@ -34,18 +34,18 @@ docker_status = getenv.is_docker()
 settings_path = getenv.getSettingsPath()
 
 dt = DingTalk()
-isNeedSendToDingTalk=False
+isNeedSendToDingTalk = False
 
 if dt.getFromENV():
     program_logs.print1("从ENV中获取钉钉配置成功！")
-    isNeedSendToDingTalk=True
+    isNeedSendToDingTalk = True
 else:
     extraPath = os.getcwd() + "/settings/"
     if docker_status:
         extraPath = settings_path
 
     program_logs.print1("正在从{}读取钉钉配置！".format(extraPath))
-    isNeedSendToDingTalk=dt.getFromFiles(extraPath)
+    isNeedSendToDingTalk = dt.getFromFiles(extraPath)
 
 delayTime = 10
 

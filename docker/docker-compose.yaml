@@ -24,10 +24,21 @@ services:
     # 1、每个学生之间使用&隔开
     # 2、每个学生，请提供其对应密码
     # 3、请将大括号一并删除
-      - YSU_AUTH_USER="{201811080333} = {3}&{学号2} = {支持的网络类型}}" \
-      - YSU_AUTH_USER_201811080333="{201811080333的密码}" \
-      - YSU_AUTH_USER_{学号2}="{学号2的密码}" \
-      - wh_access_token="{钉钉的Access Token}" \
-      - wh_secret="{钉钉的Secret}" \
+      - YSU_AUTH_USER="{201811080333} = {3}&{学号2} = {支持的网络类型}}"
+      - YSU_AUTH_USER_201811080333="{201811080333的密码}"
+      - YSU_AUTH_USER_{学号2}="{学号2的密码}"
+      - wh_access_token="{钉钉的Access Token}"
+      - wh_secret="{钉钉的Secret}"
+
+    # NIGHT_PAUSE用来控制是否夜间暂停工作，只有内容是1的时候才起作用
+    # 本科生暑假不断电，但是断网
+      - NIGHT_PAUSE="1"
+
+    # 下面两个时间参数优先级均低于 NIGHT_PAUSE
+      - Logout_Time_Start="{钉钉的Secret}"
+      - Logout_Time_End="{钉钉的Secret}"
+
+      - StartWork_Time_Start="{钉钉的Secret}"
+      - StartWork_Time_End="{钉钉的Secret}"
 
 # 请将本文件的后戳名改为yml

@@ -47,26 +47,32 @@ ENV DOCKER="Haomin Kong" \
 ENV LOGS_PATH="/ysuauth/logs" \
     SETTINGS_PATH="/ysuauth/settings"
 
+COPY requirements.txt /ysuauth/
+
 # 燕大我觉得速度最快的就是清华源了！
-RUN echo "[global] \
-    index-url = https://pypi.tuna.tsinghua.edu.cn/simple \
-    trusted-host = pypi.tuna.tsinghua.edu.cn \
-    timeout = 120 \
-    " > /etc/pip.conf \
-    # 清华源有问题，暂时使用中科大的。 \
+RUN echo "Start Installation" \
     && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
 #    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
     && apk add --no-cache build-base libffi-dev tzdata bash \
-#    && apk add --no-cache git curl \
-    && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
-    && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip3 --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
+    && apk add --no-cache git curl \
+    # pip换源。 \
+#    && echo "[global] \
+#    index-url = https://pypi.tuna.tsinghua.edu.cn/simple \
+#    trusted-host = pypi.tuna.tsinghua.edu.cn \
+#    timeout = 120 \
+#    " > /etc/pip.conf \
+#    && pip3 --no-cache-dir install -i https://mirrors.ustc.edu.cn/pypi/web/simple pip -U \
+#    && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple \
+#    && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
+#    && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+#    && pip3 --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
+    && pip3 --no-cache-dir install -r requirements.txt \
     && rm -rf ~/.cache/pip \
     && rm -rf /tmp/* \
-    && apk del libffi-dev build-base \
-    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+#    && apk del libffi-dev build-base \
 #    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo Haomin Kong >> docker_status \
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Haomin Kong" >> docker_status \
     && echo "Asia/Shanghai" > /etc/timezone
 
 
