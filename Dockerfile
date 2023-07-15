@@ -36,8 +36,8 @@ WORKDIR /ysuauth
 ENV DOCKER="Haomin Kong" \
     BASE_PATH="/ysuauth" \
     REPO_URL="https://gitee.com/yskoala/ysuauth.git" \
-#    REPO_BRANCH="develop"
-    REPO_BRANCH="beta"
+    REPO_BRANCH="develop"
+#    REPO_BRANCH="beta"
 #    REPO_BRANCH="master"
 
 #ENV USE_DEFAULT_GIT="True"
@@ -47,25 +47,33 @@ ENV DOCKER="Haomin Kong" \
 ENV LOGS_PATH="/ysuauth/logs" \
     SETTINGS_PATH="/ysuauth/settings"
 
+# 把 Python 需要的库列表拷贝进来
+COPY requirements.txt /ysuauth/
+
 # 燕大我觉得速度最快的就是清华源了！
-RUN echo "[global] \
-    index-url = https://pypi.tuna.tsinghua.edu.cn/simple \
-    trusted-host = pypi.tuna.tsinghua.edu.cn \
-    timeout = 120 \
-    " > /etc/pip.conf \
-    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+RUN    echo "Start Installation" \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+#    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
     && apk add --no-cache build-base libffi-dev tzdata bash \
     && apk add --no-cache git curl \
-    # 我觉得吧，还是比较有必要用清华源的。 \
-    && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
-    && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip3 --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
+    # pip换源。 \
+#    && echo "[global] \
+#    index-url = https://pypi.tuna.tsinghua.edu.cn/simple \
+#    trusted-host = pypi.tuna.tsinghua.edu.cn \
+#    timeout = 120 \
+#    " > /etc/pip.conf \
+#    && pip3 --no-cache-dir install -i https://mirrors.ustc.edu.cn/pypi/web/simple pip -U \
+#    && pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple \
+#    && pip3 --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U \
+#    && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+#    && pip3 --no-cache-dir install ping3 ntplib requests GitPython python-dateutil \
+    && pip3 --no-cache-dir install -r requirements.txt \
     && rm -rf ~/.cache/pip \
     && rm -rf /tmp/* \
-    && apk del libffi-dev build-base \
+#    && apk del libffi-dev build-base \
 #    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo Haomin Kong >> docker_status \
+    && echo "Haomin Kong" >> docker_status \
     && echo "Asia/Shanghai" > /etc/timezone
 
 # 主要目的还是拷贝update.py
@@ -82,14 +90,20 @@ COPY src/*.list /ysuauth/src/
 COPY *.sh /ysuauth/
 COPY *.bash /ysuauth/
 
+# 添加执行权限，以及修改 CRLF 为 LF
 RUN find /ysuauth/ -name '*.sh' -type f -print -exec chmod +x {} \;
-RUN find /ysuauth/ -name '*.bash' -type f -print -exec chmod +x {} \;
+RUN find /ysuauth/ -name '*.sh' -type f -print -exec sed -i 's/\r$//' {} \;
 
-RUN rm -rf /ysuauth/src/logs; exit 0 \
+RUN find /ysuauth/ -name '*.bash' -type f -print -exec chmod +x {} \;
+RUN find /ysuauth/ -name '*.bash' -type f -print -exec sed -i 's/\r$//' {} \;
+
+# 清除log，免得复制进来不该复制的东西
+RUN    rm -rf /ysuauth/src/logs; exit 0 \
     && rm -rf /ysuauth/src/settings; exit 0 \
     && rm -rf /ysuauth/src/remote; exit 0 \
     && rm -f /ysuauth/src/*.ysuauth; exit 0
 
+# 创建相关目录
 RUN    mkdir $LOGS_PATH; exit 0 \
     && mkdir $SETTINGS_PATH; exit 0 \
     && chmod -R 777 $LOGS_PATH

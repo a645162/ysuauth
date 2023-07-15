@@ -60,7 +60,7 @@ https://mirrors.ustc.edu.cn/help/docker-ce.html
 
 ### 命令行
 
-docker-compose up -d
+sudo docker-compose --compatibility up -d
 
 ### Portainer-CE
 

@@ -5,6 +5,11 @@ YSU Auth
 Only Simplified Chinese is supported
 as this is an internal script of a Chinese school!
 
+Github 仓库(新改动会优先推送到这里)
+https://github.com/YsKoala/ysuauth
+国内 Gitee 仓库
+https://gitee.com/yskoala/ysuauth
+
 ## 前言
 
 本脚本核心的验证代码基于 YSU_netLogin 项目，占总项目的比例很小，
