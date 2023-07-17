@@ -35,7 +35,7 @@ WORKDIR /ysuauth
 
 ENV DOCKER="Haomin Kong" \
     BASE_PATH="/ysuauth" \
-    REPO_URL="https://gitee.com/yskoala/ysuauth.git" \
+    REPO_URL="https://gitee.com/a645162/ysuauth.git" \
     REPO_BRANCH="develop"
 #    REPO_BRANCH="beta"
 #    REPO_BRANCH="master"

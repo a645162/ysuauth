@@ -24,7 +24,7 @@
 
 Docker Hub
 https://hub.docker.com/r/a645162/ysuauth
-https://github.com/YsKoala/ysuauth
+https://github.com/a645162/ysuauth
 
 ## 部署方法
 

@@ -29,10 +29,12 @@ def generate_command(dockerfile_path='Dockerfile', branch='master', version='lat
 
     tag = ""
 
+    # 这个仓库是我用的，建议您手动配置您的阿里云 容器镜像服务！
+    # 一定，一定，一定要删除我的，否则会推送失败的哦！
     remote_warehouses = [
         "a645162/ysuauth",
         # "a645162/ysuauth-dev",
-        "registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth",
+        # "registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth",
         # "registry.cn-zhangjiakou.aliyuncs.com/yskoala/ysuauth-dev",
     ]
 
@@ -51,16 +53,20 @@ def generate_command(dockerfile_path='Dockerfile', branch='master', version='lat
         else:
             if len(option) > 0:
                 tag += start_str + remote_warehouse + f":{branch}-{option}-latest" + " \\\n"
-                tag += start_str + remote_warehouse + f":{branch}-{option}-{version}" + " \\\n"
-
                 tag += start_str + remote_warehouse + f"-{branch}:{option}-latest" + " \\\n"
-                tag += start_str + remote_warehouse + f"-{branch}:{option}-{version}" + " \\\n"
+
+                # 只在测试版将版本号上传到主仓库
+                if branch == "beta":
+                    tag += start_str + remote_warehouse + f":{branch}-{option}-{version}" + " \\\n"
+                    tag += start_str + remote_warehouse + f"-{branch}:{option}-{version}" + " \\\n"
             else:
                 tag += start_str + remote_warehouse + f":{branch}-latest" + " \\\n"
-                tag += start_str + remote_warehouse + f":{branch}-{version}" + " \\\n"
-
                 tag += start_str + remote_warehouse + f"-{branch}:latest" + " \\\n"
-                tag += start_str + remote_warehouse + f"-{branch}:{version}" + " \\\n"
+
+                # 只在测试版将版本号上传到主仓库
+                if branch == "beta":
+                    tag += start_str + remote_warehouse + f":{branch}-{version}" + " \\\n"
+                    tag += start_str + remote_warehouse + f"-{branch}:{version}" + " \\\n"
 
     tag = tag.strip()
     if len(tag) > 0:
@@ -110,13 +116,16 @@ if __name__ == '__main__':
     print("请登录官方Docker Hub")
     run_sh("docker login")
 
-    print("\n" * 3)
-    print("请登录阿里云账号(Docker仓库有独立密码)")
-    # 登录 阿里云 Docker 仓库
-    run_sh("docker login --username=a645162@qq.com registry.cn-zhangjiakou.aliyuncs.com")
+    # print("\n" * 3)
+    # print("请登录阿里云账号(Docker仓库有独立密码)")
+    # # 登录 阿里云 Docker 仓库
+    # run_sh("docker login --username=a645162@qq.com registry.cn-zhangjiakou.aliyuncs.com")
 
     # 初始化 buildx
+    print("--" * 10)
+    print("初始化 buildx")
     run_sh("docker buildx install")
+    print("--" * 10)
 
     print("生成远程版")
     generate_command(
@@ -127,6 +136,7 @@ if __name__ == '__main__':
             r'\$\{USE_DEFAULT_GIT}': 'True'
         }
     )
+    print("--" * 10)
 
     print("生成本地版")
     generate_command(
@@ -139,7 +149,7 @@ if __name__ == '__main__':
         }
     )
 
-    # os.system("ping www.baidu.com")
+    print("--" * 10)
 
     end_time = datetime.datetime.now()
     print("Python Finished Time:", end_time)

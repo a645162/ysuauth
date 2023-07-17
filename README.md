@@ -6,9 +6,9 @@ Only Simplified Chinese is supported
 as this is an internal script of a Chinese school!
 
 Github 仓库(新改动会优先推送到这里)
-https://github.com/YsKoala/ysuauth
+https://github.com/a645162/ysuauth
 国内 Gitee 仓库
-https://gitee.com/yskoala/ysuauth
+https://gitee.com/a645162/ysuauth
 
 ## 前言
 
@@ -45,6 +45,7 @@ https://gitee.com/yskoala/ysuauth
 当然，您可以可以自己编译 Docker 镜像。
 
 ### Docker Hub镜像
+
 https://hub.docker.com/r/a645162/ysuauth
 
 ### ※DOCKER-COMPOSE(推荐)
@@ -63,8 +64,9 @@ mkimg.sh 脚本
 或者直接
 
 ```bash
-docker build -f "Dockerfile_local" .
+docker build -f "Dockerfile" .
 ```
+
 Windows 下可以参考构建脚本，手动执行语句。
 
 ### Python版
@@ -80,7 +82,9 @@ Windows 下可以参考构建脚本，手动执行语句。
 
 ## Kotlin版
 
-https://github.com/YsKoala/YsuAuthCore
+请参考核心代码仓库！
+
+https://github.com/a645162/YsuAuthCore
 
 目前，Kotlin版本的核心代码我已经写好，但是今后应该没有机会将他变成Android应用了，
 因此，如果您对此感兴趣，希望您能继续开发并将其发布出来！
@@ -95,9 +99,14 @@ QQ：846155976
 
 E-Mail：a645162@qq.com
 
-## 钉钉
+## 更新
 
-[钉钉加群](https://h5.dingtalk.com/circle/healthCheckin.html?corpId=ding99dabd69bc14820726501c2c33ba7dcb)
-也可以哦！
+2023年7月17日
 
-![dingding_qr_code](img/WechatIMG725.jpg)
+近期会大幅度更新
+
+我的屎山我估计也没人能维护~
+
+但是我应该是最后最后一次维护喽，在用不了，就只能麻烦您自己改自己写喽。
+
+这个项目，本质上，是我看到好的东西就往里面融的产物！

@@ -58,6 +58,8 @@ services:
 
       # ----------------------------------------------------------------
       # 钉钉 DingTalk
+      - DingTalk_Enable="1"
+
       - DingTalkWork_Time_Start="5:00"
       - DingTalkWork_Time_End="23:00"
 
