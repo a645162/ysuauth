@@ -246,6 +246,8 @@ if __name__ == "__main__":
             inWorkTime_weekend = inYsuWeekend and apptime.isInTime((6, 1), (23, 59))
             inWorkTime = inWorkTime_weekday or inWorkTime_weekend or ignore_work_time
 
+        # TODO:时间检测
+
         if not inWorkTime:
             if last == 1:
                 # 还是检测一下吧，免得一晚log全是这个！

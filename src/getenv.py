@@ -58,6 +58,18 @@ def getDingTalk():
     else:
         return wh_access_token, wh_secret
 
+def time_str_2_time():
+    pass
+
+def getUserTimes():
+    Logout_Time_Start = os.environ.get("Logout_Time_Start")
+    Logout_Time_End = os.environ.get("Logout_Time_End")
+    StartWork_Time_Start = os.environ.get("StartWork_Time_Start")
+    StartWork_Time_End = os.environ.get("StartWork_Time_End")
+
+
+
+    return gitPath, gitBranch
 
 def getGitPath():
     gitPath = os.environ.get("REPO_URL")

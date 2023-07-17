@@ -1,10 +1,14 @@
 version: "3"
 services:
   ysuauth_1: #第1个
+    # 在这里的冒号后面设置您要使用的软件版本
     image: a645162/ysuauth:latest
-#    image: a645162/ysuauth:3.0.2
+#    image: a645162/ysuauth:dev-4.0.2
     restart: always
-    container_name: ysuauth
+    # 容器名
+    container_name: ysuauth_1
+    # deploy 用于限制资源占用，主要用于树莓派等资源受限的设备，可以将整段注释掉
+    # 仅在使用 sudo docker-compose --compatibility up -d 才会起作用
     deploy:
       resources:
         limits:
@@ -13,32 +17,51 @@ services:
         reservations:
           cpus: '0.2'
           memory: 200M
+    # 网络模式以及tty请不要修改！
     network_mode: host
     tty: true
+    # 文件路径映射，冒号左边可以修改为您想要设置的路径
+    # 可以是绝对路径也可以是相对路径
+    # 等号右边绝对不可以修改！
     volumes:
 #      - /home/pi/ysuauth/settings:/ysuauth/settings
-      - ./settings/:/ysuauth/settings/
+      - ./ysuauth/settings/:/ysuauth/settings/
 #      - /home/pi/ysuauth/log:/ysuauth/log
-      - ./logs/:/ysuauth/logs/
+      - ./ysuauth/logs/:/ysuauth/logs/
+    # 程序参数设置
     environment:
-    # 1、每个学生之间使用&隔开
-    # 2、每个学生，请提供其对应密码
-    # 3、请将大括号一并删除
+      # ※※※ 账号配置 ※※※
+      # ----------------------------------------------------------------
+      # 1、每个学生之间使用&隔开
+      # 2、每个学生，请提供其对应密码
+      # 3、请将大括号一并删除
       - YSU_AUTH_USER="{201811080333} = {3}&{学号2} = {支持的网络类型}}"
       - YSU_AUTH_USER_201811080333="{201811080333的密码}"
       - YSU_AUTH_USER_{学号2}="{学号2的密码}"
+      # ----------------------------------------------------------------
+      # 时间设置
+      # 注：时区为北京时间哦！程序会自动通过 NTP 获取最新时间！
+
+      # NIGHT_PAUSE用来控制是否夜间暂停工作，只有内容是1的时候才起作用
+      # 本科生暑假不断电，但是断网
+      # 也就是如果您是本科生，那么请将这个参数设为 1 ，请不要随便删除双引号
+      - NIGHT_PAUSE="1"
+
+      # 下面两个时间参数优先级均低于 NIGHT_PAUSE
+      # 在下面的时间段内会自动退出登录
+      - Logout_Time_Start="3:30"
+      - Logout_Time_End="5:30"
+
+      # 在下面的时间段内才会执行，但是大前提是要满足 NIGHT_PAUSE 所配置的时间
+      - StartWork_Time_Start="6:05"
+      - StartWork_Time_End="23:20"
+
+      # ----------------------------------------------------------------
+      # 钉钉 DingTalk
+      - DingTalkWork_Time_Start="5:00"
+      - DingTalkWork_Time_End="23:00"
+
       - wh_access_token="{钉钉的Access Token}"
       - wh_secret="{钉钉的Secret}"
 
-    # NIGHT_PAUSE用来控制是否夜间暂停工作，只有内容是1的时候才起作用
-    # 本科生暑假不断电，但是断网
-      - NIGHT_PAUSE="1"
-
-    # 下面两个时间参数优先级均低于 NIGHT_PAUSE
-      - Logout_Time_Start="{钉钉的Secret}"
-      - Logout_Time_End="{钉钉的Secret}"
-
-      - StartWork_Time_Start="{钉钉的Secret}"
-      - StartWork_Time_End="{钉钉的Secret}"
-
-# 请将本文件的后戳名改为yml
+# 请确保本文件的后戳名为 yml
