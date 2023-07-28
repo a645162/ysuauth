@@ -3,4 +3,4 @@ docker buildx build -f "{}" --push \
             --build-arg USE_DEFAULT_GIT="${USE_DEFAULT_GIT}" \
             --progress=plain --no-cache \
             --platform {} \
-            {} .
+            {}.

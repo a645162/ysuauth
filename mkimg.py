@@ -7,6 +7,7 @@
 
 import datetime
 import os
+import platform
 import re
 import sys
 
@@ -15,7 +16,7 @@ need_run = True
 
 def exe_command(command):
     out = os.popen(command)
-    return str(out.readlines()[0]).strip()
+    return out.readlines()
 
 
 def run_sh(command):
@@ -23,9 +24,26 @@ def run_sh(command):
         os.system(command)
 
 
-def generate_command(dockerfile_path='Dockerfile', branch='master', version='latest', option="", replace_text=None,
-                     run=False):
+def is_windows():
+    return platform.system() == "Windows"
+
+
+def generate_command(
+        dockerfile_path='Dockerfile',
+        branch='master',
+        version='latest',
+        option="",
+        replace_text=None,
+        profile_tag='',
+        run=False
+):
     platform = "linux/amd64,linux/arm64,linux/386,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x"
+
+    if branch == 'develop':
+        branch = 'dev'
+    if branch == 'dev':
+        # dev分支编译少一点，免得推送半天！
+        platform = "linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6"
 
     tag = ""
 
@@ -77,10 +95,25 @@ def generate_command(dockerfile_path='Dockerfile', branch='master', version='lat
 
     if replace_text is not None:
         for k in replace_text.keys():
-            print(k)
+            # print(k)
             build_command = re.sub(k, replace_text[k], build_command)
 
     build_command = build_command.format(dockerfile_path, platform, tag).strip()
+
+    if is_windows():
+        # Windows 对命令行特殊处理
+        build_command_line = build_command.split("\n")
+        build_command = ""
+        for line in build_command_line:
+            line = line.rstrip()
+            if line.endswith("\\"):
+                line = line[:-1] + "`"
+            build_command += line + "\n"
+
+        if len(profile_tag) > 0:
+            profile_tag = "_" + profile_tag
+        with open('build_image' + profile_tag + '.ps1', 'w', encoding='utf-8') as f:
+            f.write(build_command)
 
     print(build_command)
     print("即将调用buildx构建镜像")
@@ -96,7 +129,20 @@ if __name__ == '__main__':
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    branch = exe_command(r"git branch | sed -n '/\* /s///p'").strip()
+    # branch = exe_command(r"git branch | sed -n '/\* /s///p'").strip()
+    result = os.popen(r"git branch").readlines()
+    print("git branch", result)
+
+    branch = ""
+    for r in result:
+        if r.find("*") != -1:
+            branch = r.replace("*", "").strip()
+            break
+
+    if len(branch) == 0:
+        print("get branch error!")
+        exit(1)
+
     if branch == 'develop':
         branch = 'dev'
 
@@ -125,6 +171,10 @@ if __name__ == '__main__':
     print("--" * 10)
     print("初始化 buildx")
     run_sh("docker buildx install")
+
+    # ERROR: Multiple platforms feature is currently not supported for docker driver.
+    # Please switch to a different driver (eg. "docker buildx create --use")
+    run_sh("docker buildx create --use")
     print("--" * 10)
 
     print("生成远程版")
@@ -134,7 +184,8 @@ if __name__ == '__main__':
         replace_text={
             r'\$\{GIT_ENV}': 'GIT',
             r'\$\{USE_DEFAULT_GIT}': 'True'
-        }
+        },
+        profile_tag='remote'
     )
     print("--" * 10)
 
@@ -146,7 +197,8 @@ if __name__ == '__main__':
         replace_text={
             r'\$\{GIT_ENV}': 'LOCAL',
             r'\$\{USE_DEFAULT_GIT}': 'False'
-        }
+        },
+        profile_tag='local'
     )
 
     print("--" * 10)
