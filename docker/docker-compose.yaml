@@ -49,8 +49,8 @@ services:
 
       # 下面两个时间参数优先级均低于 NIGHT_PAUSE
       # 在下面的时间段内会自动退出登录
-      - Logout_Time_Start="3:30"
-      - Logout_Time_End="5:30"
+#      - Logout_Time_Start="3:30"
+#      - Logout_Time_End="5:30"
 
       # 在下面的时间段内才会执行，但是大前提是要满足 NIGHT_PAUSE 所配置的时间
       - StartWork_Time_Start="6:05"
@@ -60,7 +60,7 @@ services:
       # 钉钉 DingTalk
       - DingTalk_Enable="1"
 
-      - DingTalkWork_Time_Start="5:00"
+      - DingTalkWork_Time_Start="5:30"
       - DingTalkWork_Time_End="23:00"
 
       - wh_access_token="{钉钉的Access Token}"

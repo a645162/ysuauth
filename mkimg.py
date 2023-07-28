@@ -117,7 +117,8 @@ def generate_command(
 
     print(build_command)
     print("即将调用buildx构建镜像")
-    run_sh(build_command)
+    if not is_windows():
+        run_sh(build_command)
 
 
 if __name__ == '__main__':

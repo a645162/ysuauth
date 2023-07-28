@@ -53,25 +53,34 @@ def getPwd(stu_id):
     return os.environ.get("YSU_AUTH_USER_" + str(stu_id))
 
 
+def split_time_str(time_str):
+    time_str_l = str(time_str).split(":")
+    if len(time_str_l) == 2:
+        try:
+            t1 = int(time_str_l[0])
+            t2 = int(time_str_l[1])
+            return t1, t2
+        except:
+            return None
+    else:
+        return None
+
+
 def isDingTalkEnable():
     DingTalk_Enable = os.environ.get("DingTalk_Enable").strip()
 
     if DingTalk_Enable == "1":
 
-        DingTalkWork_Time_Start = os.environ.get("DingTalkWork_Time_Start")
-        DingTalkWork_Time_End = os.environ.get("DingTalkWork_Time_End")
-        try:
-            dingtalk_time = (
-                int(DingTalkWork_Time_Start),
-                int(DingTalkWork_Time_End)
-            )
-        except:
-            dingtalk_time = None
+        DingTalkWork_Time_Start = os.environ.get("DingTalkWork_Time_Start").strip()
+        DingTalkWork_Time_End = os.environ.get("DingTalkWork_Time_End").strip()
 
-        if dingtalk_time is None:
-            return True
+        time_start = split_time_str(DingTalkWork_Time_Start)
+        time_end = split_time_str(DingTalkWork_Time_End)
+
+        if time_start is None or time_end is None:
+            return False
         else:
-            return apptime.isInTime(dingtalk_time[0], dingtalk_time[1])
+            return apptime.isInTime(time_start, time_end)
     else:
         return False
 
@@ -93,20 +102,26 @@ def getUserTimes():
     Logout_Time_Start = os.environ.get("Logout_Time_Start").strip()
     Logout_Time_End = os.environ.get("Logout_Time_End").strip()
 
-    try:
-        logout_time = (int(Logout_Time_Start), int(Logout_Time_End))
-    except:
+    logout_time1 = split_time_str(Logout_Time_Start)
+    logout_time2 = split_time_str(Logout_Time_End)
+
+    if logout_time1 is None or logout_time2 is None:
         logout_time = None
+    else:
+        logout_time = logout_time1, logout_time2
 
     StartWork_Time_Start = os.environ.get("StartWork_Time_Start").strip()
     StartWork_Time_End = os.environ.get("StartWork_Time_End").strip()
 
-    try:
-        start_time = (int(StartWork_Time_Start), int(StartWork_Time_End))
-    except:
-        start_time = None
+    start_time1 = split_time_str(StartWork_Time_Start)
+    start_time2 = split_time_str(StartWork_Time_End)
 
-    return (start_time, logout_time)
+    if start_time1 is None or start_time2 is None:
+        start_time = None
+    else:
+        start_time = start_time1, start_time2
+
+    return start_time, logout_time
 
 
 def getGitPath():

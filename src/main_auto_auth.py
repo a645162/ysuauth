@@ -258,7 +258,10 @@ if __name__ == "__main__":
             inWorkTime_weekend = inYsuWeekend and apptime.isInTime((6, 1), (23, 59))
             inWorkTime = inWorkTime_weekday or inWorkTime_weekend or ignore_work_time
 
-        if apptime.isInTime(user_logout_time[0], user_logout_time[1]):
+        if (
+                user_logout_time is not None and
+                apptime.isInTime(user_logout_time[0], user_logout_time[1])
+        ):
             # 在停止时间内
             if not logout_done:
                 logout_done = True
