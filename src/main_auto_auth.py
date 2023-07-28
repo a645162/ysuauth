@@ -20,15 +20,15 @@ from dingtalk import DingTalk
 
 restartFilename = "restart.ysuauth"
 if config.isFileExist(restartFilename):
-    program_logs.print1('\t\t\t\t\t程序重启。')
+    program_logs.print1("\t\t\t\t\t程序重启。")
     os.remove(restartFilename)
 
-program_logs.print1('程序开始运行')
+program_logs.print1("程序开始运行")
 
 # 获取当前运行目录
-program_logs.print1('当前工作目录' + sys.path[0])
-program_logs.print1('执行命令的位置' + os.getcwd())
-program_logs.print1('---------------------------')
+program_logs.print1("当前工作目录" + sys.path[0])
+program_logs.print1("执行命令的位置" + os.getcwd())
+program_logs.print1("---------------------------")
 
 docker_status = getenv.is_docker()
 settings_path = getenv.getSettingsPath()
@@ -49,8 +49,13 @@ else:
 
 delayTime = 10
 
+# 适用于本科生的是否夜间工作(最高优先级)
 is_night_work = getenv.get_night_pause()
 
+# 程序启停
+user_start_time, user_logout_time = getenv.getUserTimes()
+
+# NTP 相关
 my_ntp_hosts_class = ntp_hosts.ntp_hosts()
 my_ntp_hosts_class.initFile()
 my_ntp_hosts = my_ntp_hosts_class.getHosts()
@@ -70,9 +75,12 @@ class dingTalkThread(threading.Thread):
 
     def run(self):
         now_time = datetime.datetime.now()
-        program_logs.print1("\t\t\t启动钉钉发信线程({})："
-                            .format(datetime.datetime.strftime(now_time, '%Y-%m-%d %H:%M:%S'))
-                            + self.name)
+        program_logs.print1(
+            "\t\t\t启动钉钉发信线程({})：".format(
+                datetime.datetime.strftime(now_time, "%Y-%m-%d %H:%M:%S")
+            )
+            + self.name
+        )
         typeStr = "连接成功"
 
         if not self.type:
@@ -82,11 +90,9 @@ class dingTalkThread(threading.Thread):
                     "title": "联网成功",
                     "text": "#### 连网时间 @全体成员 \n > 联网时间为{}\n"
                             " > ![icon](https://lxy.ysu.edu.cn/images/lxy/bottom_logo.gif)\n > ###### {} 发送\n"
-                            "[燕山大学网络](http://auth.ysu.edu.cn) \n".format(self.time, now_time)
+                            "[燕山大学网络](http://auth.ysu.edu.cn) \n".format(self.time, now_time),
                 },
-                "at": {
-                    "isAtAll": True
-                }
+                "at": {"isAtAll": True},
             }
         else:
             typeStr = "断网时间"
@@ -97,21 +103,15 @@ class dingTalkThread(threading.Thread):
                     "title": "断网时间",
                     "text": "#### 断网时间 @全体成员 \n > {}"
                             " > ![icon](https://lxy.ysu.edu.cn/images/lxy/bottom_logo.gif)\n > ###### {} 发送\n"
-                            "[燕山大学网络](http://auth.ysu.edu.cn) \n".format(self.time, now_time)
+                            "[燕山大学网络](http://auth.ysu.edu.cn) \n".format(self.time, now_time),
                 },
-                "at": {
-                    "isAtAll": True
-                }
+                "at": {"isAtAll": True},
             }
         program_logs.print1(
-            "\t\t\t延时{}秒后发送{}{}的消息！"
-            .format(str(delayTime), self.time, typeStr)
+            "\t\t\t延时{}秒后发送{}{}的消息！".format(str(delayTime), self.time, typeStr)
         )
         time.sleep(delayTime)
-        program_logs.print1(
-            "\t\t\t延时完毕开始发送{}{}的消息！"
-            .format(self.time, typeStr)
-        )
+        program_logs.print1("\t\t\t延时完毕开始发送{}{}的消息！".format(self.time, typeStr))
         ok = False
         while not ok:
             try:
@@ -136,7 +136,9 @@ class dingTalkThread(threading.Thread):
                     if not ok:
                         if parseDingTalkJson.testDingTalkError(jsonStr, "too fast"):
                             time.sleep(60 + random.randint(10, 30))
-                        elif parseDingTalkJson.testDingTalkError(jsonStr, "invalid timestamp"):
+                        elif parseDingTalkJson.testDingTalkError(
+                                jsonStr, "invalid timestamp"
+                        ):
                             dt.getUrl()
 
                 else:
@@ -144,9 +146,12 @@ class dingTalkThread(threading.Thread):
                     ok = True
 
         now_time = datetime.datetime.now()
-        program_logs.print1("\t\t\t退出钉钉发信线程({})："
-                            .format(datetime.datetime.strftime(now_time, '%Y年%m月%d日 %H:%M:%S'))
-                            + self.name)
+        program_logs.print1(
+            "\t\t\t退出钉钉发信线程({})：".format(
+                datetime.datetime.strftime(now_time, "%Y年%m月%d日 %H:%M:%S")
+            )
+            + self.name
+        )
         if self.threadPool is not None:
             self.threadPool.remove(self)
 
@@ -160,8 +165,7 @@ if users1 is None:
     program_logs.print1("No any users in Env!")
 else:
     users += users1
-    program_logs.print1("从ENV中获取user列表成功！获取到{}个"
-                        .format(len(users1)))
+    program_logs.print1("从ENV中获取user列表成功！获取到{}个".format(len(users1)))
 iniPath = "users.ini"
 if docker_status:
     iniPath = settings_path + "/" + iniPath
@@ -173,11 +177,9 @@ if users1 is None:
     program_logs.print1("No any users!", True)
 else:
     users += users1
-    program_logs.print1("从File中获取user列表成功！获取到{}个"
-                        .format(len(users1)))
+    program_logs.print1("从File中获取user列表成功！获取到{}个".format(len(users1)))
 program_logs.print1(users)
-program_logs.print1("获取完毕！共计获取到{}个"
-                    .format(len(users)))
+program_logs.print1("获取完毕！共计获取到{}个".format(len(users)))
 if len(users) == 0:
     program_logs.print1("致命错误--未获取到任何用户！", True)
     exit(1)
@@ -185,8 +187,10 @@ if len(users) == 0:
 
 def login_user(all_user):
     for user in all_user:
-        supports_ori = user["support"].split(",")
-        # TODO: 这一行可能会报错
+        try:
+            supports_ori = user["support"].split(",")
+        except:
+            continue
         # supports = [x for x in supports if int(x) in range(4)]
 
         supports = []
@@ -217,8 +221,9 @@ def login_user(all_user):
                 program_logs.print1("连接{}".format(user["num"]) + str(re))
                 break
             else:
-                program_logs.print1(parse_user.netTypeToString(support) + "失败(" + re[1] + ")",
-                                    True)
+                program_logs.print1(
+                    parse_user.netTypeToString(support) + "失败(" + re[1] + ")", True
+                )
 
 
 last = -1
@@ -227,6 +232,10 @@ threadPool = []
 ignore_work_time = getenv.is_ignore_work_time()
 lastConnectedTime = ""
 betweenConnectedTime = ""
+
+# 用于标识是否已经执行过logout
+# 夜间自动退出登录只需要执行1次
+logout_done = False
 
 if __name__ == "__main__":
     while True:
@@ -237,16 +246,29 @@ if __name__ == "__main__":
             hour = now.hour
             dayOfWeek = now.isoweekday()
             inYsuWeekend_Normal = dayOfWeek == 5 or dayOfWeek == 6
-            inYsuWeekend_Holiday = \
-                (dayOfWeek == 5 and apptime.isInTime((6, 1), (23, 59))) \
-                or dayOfWeek == 6 \
-                or (dayOfWeek == 7 and apptime.isInTime((0, 0), (23, 25)))
+            inYsuWeekend_Holiday = (
+                    (dayOfWeek == 5 and apptime.isInTime((6, 1), (23, 59)))
+                    or dayOfWeek == 6
+                    or (dayOfWeek == 7 and apptime.isInTime((0, 0), (23, 25)))
+            )
             inYsuWeekend = inYsuWeekend_Holiday
-            inWorkTime_weekday = (not inYsuWeekend) and apptime.isInTime((6, 1), (23, 28))
+            inWorkTime_weekday = (not inYsuWeekend) and apptime.isInTime(
+                (6, 1), (23, 28)
+            )
             inWorkTime_weekend = inYsuWeekend and apptime.isInTime((6, 1), (23, 59))
             inWorkTime = inWorkTime_weekday or inWorkTime_weekend or ignore_work_time
 
-        # TODO:时间检测
+        if apptime.isInTime(user_logout_time[0], user_logout_time[1]):
+            # 在停止时间内
+            if not logout_done:
+                logout_done = True
+                ysuAuth.logout()
+
+        if user_start_time is not None:
+            inWorkTime = inWorkTime and apptime.isInTime(user_start_time[0], user_start_time[1])
+
+        if inWorkTime and logout_done:
+            logout_done = False
 
         if not inWorkTime:
             if last == 1:
@@ -260,13 +282,11 @@ if __name__ == "__main__":
         if not ysuAuth.tst_net():
             program_logs.print1("Not Connect!!!!!")
             if last == 2:
-                disConnectedTime = \
-                    datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
+                disConnectedTime = datetime.datetime.strftime(now, "%Y-%m-%d %H:%M:%S")
                 if lastConnectedTime != "":
-                    diff_str = \
-                        apptime.getDateDiffStr(
-                            apptime.parse_str2datetime(lastConnectedTime),
-                            now)
+                    diff_str = apptime.getDateDiffStr(
+                        apptime.parse_str2datetime(lastConnectedTime), now
+                    )
 
                     program_logs.print1("此次在线时长为：" + diff_str)
                     betweenConnectedTime = "上次在线时长为：" + diff_str
@@ -277,10 +297,7 @@ if __name__ == "__main__":
         else:
             if last != 2:
                 program_logs.print1("Turn to connected!")
-                program_logs \
-                    .asynchronousPrintThread("Turn to connected!",
-                                             my_ntp_hosts
-                                             )
+                program_logs.asynchronousPrintThread("Turn to connected!", my_ntp_hosts)
 
                 ntp_timestamp = ntp.ntp_getTimeStamp(my_ntp_hosts)
                 if ntp_timestamp == 0:
@@ -291,45 +308,47 @@ if __name__ == "__main__":
                     program_logs.print1(my_ntp_hosts)
                     last = 1
                 else:
-                    ntp_time_str = \
-                        datetime.datetime.fromtimestamp(ntp_timestamp) \
-                            .strftime("%Y-%m-%d %H:%M:%S")
+                    ntp_time_str = datetime.datetime.fromtimestamp(
+                        ntp_timestamp
+                    ).strftime("%Y-%m-%d %H:%M:%S")
 
-                localTime = datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')
+                localTime = datetime.datetime.strftime(now, "%Y-%m-%d %H:%M:%S")
                 lastConnectedTime = localTime
 
                 # 钉钉发信
-                if isNeedSendToDingTalk:
-                    thread = \
-                        dingTalkThread(
-                            localTime
-                            + "\n NTP时间为：" + ntp_time_str,
-                            False,
-                            my_ntp_hosts,
-                            threadPool
-                            # None
-                        )
+                if isNeedSendToDingTalk and getenv.isDingTalkEnable():
+                    thread = dingTalkThread(
+                        localTime + "\n NTP时间为：" + ntp_time_str,
+                        False,
+                        my_ntp_hosts,
+                        threadPool
+                        # None
+                    )
                     thread.start()
                     threadPool.append(thread)
             last = 2
 
             # 断网时间发送（网络恢复后的发送流程）
             if len(disConnectedTime) != 0:
-                diff_str = \
-                    apptime.getDateDiffStr(
-                        apptime.parse_str2datetime(disConnectedTime),
-                        now
-                    )
+                diff_str = apptime.getDateDiffStr(
+                    apptime.parse_str2datetime(disConnectedTime), now
+                )
 
                 program_logs.print1("此次断网时长为：" + diff_str)
                 betweenDisconnectedTime = "本次断网时长为：" + diff_str
 
-                if isNeedSendToDingTalk:
-                    thread = \
-                        dingTalkThread(
-                            " \n##### 断网时间为：" + disConnectedTime
-                            + " \n##### " + betweenDisconnectedTime
-                            + " \n##### " + betweenConnectedTime, True, my_ntp_hosts, threadPool)
+                if isNeedSendToDingTalk and getenv.isDingTalkEnable():
+                    thread = dingTalkThread(
+                        " \n##### 断网时间为："
+                        + disConnectedTime
+                        + " \n##### "
+                        + betweenDisconnectedTime
+                        + " \n##### "
+                        + betweenConnectedTime,
+                        True,
+                        my_ntp_hosts,
+                        threadPool,
+                    )
                     thread.start()
                     threadPool.append(thread)
 
@@ -346,6 +365,5 @@ if __name__ == "__main__":
             program_logs.print1("结束程序。")
             program_logs.print1("-----------------------------------------------------")
             exit(1)
-            break
 
         time.sleep(10)

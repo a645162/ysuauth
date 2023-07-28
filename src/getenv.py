@@ -1,5 +1,7 @@
 import os
 
+import apptime
+
 
 def is_docker():
     return os.environ.get("DOCKER") is not None
@@ -10,14 +12,15 @@ def is_git_mode():
     if d is None:
         d = "False"
 
-    return \
-            os.environ.get("DOCKER") \
-            or os.path.exists("git_mode") \
-            or os.path.exists("git_mode.ysuauth") \
-            or os.path.exists("/ysuauth/git_mode") \
-            or os.path.exists("/ysuauth/git_mode.ysuauth") \
-            or os.path.exists(getBasePath() + "/docker_status") \
+    return (
+            os.environ.get("DOCKER")
+            or os.path.exists("git_mode")
+            or os.path.exists("git_mode.ysuauth")
+            or os.path.exists("/ysuauth/git_mode")
+            or os.path.exists("/ysuauth/git_mode.ysuauth")
+            or os.path.exists(getBasePath() + "/docker_status")
             or d == "True"
+    )
 
 
 def is_debug_mode():
@@ -50,12 +53,30 @@ def getPwd(stu_id):
     return os.environ.get("YSU_AUTH_USER_" + str(stu_id))
 
 
+def isDingTalkEnable():
+    DingTalk_Enable = os.environ.get("DingTalk_Enable").strip()
+
+    if DingTalk_Enable == "1":
+
+        DingTalkWork_Time_Start = os.environ.get("DingTalkWork_Time_Start")
+        DingTalkWork_Time_End = os.environ.get("DingTalkWork_Time_End")
+        try:
+            dingtalk_time = (
+                int(DingTalkWork_Time_Start),
+                int(DingTalkWork_Time_End)
+            )
+        except:
+            dingtalk_time = None
+
+        if dingtalk_time is None:
+            return True
+        else:
+            return apptime.isInTime(dingtalk_time[0], dingtalk_time[1])
+    else:
+        return False
+
+
 def getDingTalk():
-    DingTalk_Enable = os.environ.get("DingTalk_Enable")
-
-    DingTalkWork_Time_Start = os.environ.get("DingTalkWork_Time_Start")
-    DingTalkWork_Time_End = os.environ.get("DingTalkWork_Time_End")
-
     wh_access_token = os.environ.get("wh_access_token")
     wh_secret = os.environ.get("wh_secret")
     if wh_secret is None or wh_access_token is None:
@@ -69,10 +90,23 @@ def time_str_2_time():
 
 
 def getUserTimes():
-    Logout_Time_Start = os.environ.get("Logout_Time_Start")
-    Logout_Time_End = os.environ.get("Logout_Time_End")
-    StartWork_Time_Start = os.environ.get("StartWork_Time_Start")
-    StartWork_Time_End = os.environ.get("StartWork_Time_End")
+    Logout_Time_Start = os.environ.get("Logout_Time_Start").strip()
+    Logout_Time_End = os.environ.get("Logout_Time_End").strip()
+
+    try:
+        logout_time = (int(Logout_Time_Start), int(Logout_Time_End))
+    except:
+        logout_time = None
+
+    StartWork_Time_Start = os.environ.get("StartWork_Time_Start").strip()
+    StartWork_Time_End = os.environ.get("StartWork_Time_End").strip()
+
+    try:
+        start_time = (int(StartWork_Time_Start), int(StartWork_Time_End))
+    except:
+        start_time = None
+
+    return (start_time, logout_time)
 
 
 def getGitPath():
@@ -80,8 +114,8 @@ def getGitPath():
     gitBranch = os.environ.get("REPO_BRANCH")
 
     if gitPath is None or gitBranch is None:
-        gitPath = 'https://gitee.com/a645162/ysuauth.git'
-        gitBranch = 'master'
+        gitPath = "https://gitee.com/a645162/ysuauth.git"
+        gitBranch = "master"
 
     return gitPath, gitBranch
 
