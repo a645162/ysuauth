@@ -1,0 +1,1 @@
+./build_image_local.ps1

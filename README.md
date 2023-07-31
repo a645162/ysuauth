@@ -59,7 +59,7 @@ https://hub.docker.com/r/a645162/ysuauth
 本项目使用 buildx 进行多架构构建。
 
 可以在macOS或Linux下执行
-mkimg.sh 脚本
+python3 mkimg.py 执行构建脚本
 ，调用buildx构建
 或者直接
 
@@ -67,7 +67,11 @@ mkimg.sh 脚本
 docker build -f "Dockerfile" .
 ```
 
-Windows 下可以参考构建脚本，手动执行语句。
+Windows 下我还没有搞懂怎么生成脚本好一点，
+暂时 Python 脚本只是生成 PowerShell 脚本。
+
+执行完 mkimg.py 脚本以后，
+直接执行 win_build.ps1 这个 PowerShell 脚本即可！
 
 ### Python版
 
