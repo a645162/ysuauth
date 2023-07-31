@@ -50,7 +50,7 @@ else:
 delayTime = 10
 
 # 适用于本科生的是否夜间工作(最高优先级)
-is_night_work = getenv.get_night_pause()
+is_night_work = not getenv.get_night_pause()
 
 # 程序启停
 user_start_time, user_logout_time = getenv.getUserTimes()
@@ -241,8 +241,8 @@ if __name__ == "__main__":
     while True:
 
         inWorkTime = is_night_work
+        now = datetime.datetime.now()
         if not inWorkTime:
-            now = datetime.datetime.now()
             hour = now.hour
             dayOfWeek = now.isoweekday()
             inYsuWeekend_Normal = dayOfWeek == 5 or dayOfWeek == 6
@@ -258,17 +258,23 @@ if __name__ == "__main__":
             inWorkTime_weekend = inYsuWeekend and apptime.isInTime((6, 1), (23, 59))
             inWorkTime = inWorkTime_weekday or inWorkTime_weekend or ignore_work_time
 
+        # 判断在不在用户设定的工作时间内
+        # 必须同时满足(夜间工作设定)与(用户设定)才会工作！
+        if user_start_time is not None:
+            inWorkTime = inWorkTime and apptime.isInTime(user_start_time[0], user_start_time[1])
+
+        # 必须保证不在工作时间才会执行logout操作！
+        # 否则退出后会很快连接上！
         if (
+                (not inWorkTime) and
+                (not logout_done) and
                 user_logout_time is not None and
                 apptime.isInTime(user_logout_time[0], user_logout_time[1])
         ):
             # 在停止时间内
-            if not logout_done:
-                logout_done = True
-                ysuAuth.logout()
-
-        if user_start_time is not None:
-            inWorkTime = inWorkTime and apptime.isInTime(user_start_time[0], user_start_time[1])
+            program_logs.print1("Logout_Time生效！")
+            logout_done = True
+            ysuAuth.logout()
 
         if inWorkTime and logout_done:
             logout_done = False

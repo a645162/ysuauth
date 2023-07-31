@@ -7,13 +7,27 @@ def getNow():
     return datetime.datetime.now()
 
 
-def isInTime(t1=(6, 0), t2=(11, 30)):
-    now = getNow()
-    hour = now.hour
-    minute = now.minute
-    return (hour > t1[0] or (hour == t1[0] and minute >= t1[1])) and (
-            hour < t2[0] or (hour == t2[0] and minute <= t2[1])
-    )
+# 是否在时间段内
+# 包括端点值
+def isInTime(start=(6, 0), end=(11, 30)):
+    now1 = datetime.datetime.now()
+    hour = now1.hour
+    minute = now1.minute
+    print(start, end)
+    if start[0] > end[0] or (start[0] == end[0] and start[1] > end[1]):
+        # 隔天
+        # print("隔一天")
+        return not (
+                (hour > end[0] or (hour == end[0] and minute > end[1])) and
+                (hour < start[0] or (hour == start[0] and minute < start[1]))
+        )
+    else:
+        # 同一天
+        # print("同一天")
+        return (
+                (hour > start[0] or (hour == start[0] and minute >= start[1])) and
+                (hour < end[0] or (hour == end[0] and minute <= end[1]))
+        )
 
 
 def parse_str2datetime(str):

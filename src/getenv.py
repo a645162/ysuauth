@@ -40,7 +40,10 @@ def is_ignore_work_time():
 
 
 def get_night_pause():
-    env_np = str(os.environ.get("NIGHT_PAUSE")).strip()
+    np = os.environ.get("NIGHT_PAUSE")
+    if np is None:
+        return False
+    env_np = str(np).strip()
     return env_np == "1"
 
 
@@ -67,9 +70,9 @@ def split_time_str(time_str):
 
 
 def isDingTalkEnable():
-    DingTalk_Enable = os.environ.get("DingTalk_Enable").strip()
+    DingTalk_Enable = os.environ.get("DingTalk_Enable")
 
-    if DingTalk_Enable == "1":
+    if DingTalk_Enable is not None and str(DingTalk_Enable).strip() == "1":
 
         DingTalkWork_Time_Start = os.environ.get("DingTalkWork_Time_Start").strip()
         DingTalkWork_Time_End = os.environ.get("DingTalkWork_Time_End").strip()
