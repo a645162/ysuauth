@@ -141,3 +141,6 @@ fabric.properties
 
 *.bkp
 *.ps1
+
+video/.$ysunet.drawio.bkp
+video/.$ysunet.drawio.dtmp
